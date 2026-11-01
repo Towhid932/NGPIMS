@@ -1,403 +1,386 @@
-```html
 <!DOCTYPE html>
 <html lang="bn">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NGPIMS মোবাইল ও ই-মেইল পরিবর্তন পোর্টাল - বান্দরবান পার্বত্য জেলা</title>
+    <title>NGPIMS মোবাইল ও ই-মেইল পরিবর্তন সাইট</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Font Awesome Icons -->
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- SheetJS (xlsx) for Excel Exports -->
+    <!-- SheetJS (Excel Export) -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Tiro+Bangla:ital@0;1&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=SolaimanLipi&display=swap');
         body {
-            font-family: 'Noto Sans Bengali', sans-serif;
-            background-color: #f8fafc;
+            font-family: 'SolaimanLipi', Arial, sans-serif;
+            background-color: #f1f5f9;
         }
 
-        .bangla-serif {
-            font-family: 'Tiro Bangla', serif;
+        /* Hide scrollbars for slick horizontal tab scrolling */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
-        /* Print Styling exact matching requirements */
+        /* Standard Print Rules for Forwarding Letter */
         @media print {
-            body {
-                background: #fff !important;
-                color: #000 !important;
-            }
             body * {
                 visibility: hidden;
             }
             #printArea, #printArea * {
-                visibility: visible !important;
+                visibility: visible;
             }
             #printArea {
-                position: absolute !important;
-                left: 0 !important;
-                top: 0 !important;
-                width: 100% !important;
-                background: #fff !important;
-                color: #000 !important;
-                padding: 0 !important;
-                margin: 0 !important;
-                display: block !important;
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                margin: 0;
+                padding: 0;
+                background: #fff;
+                color: #000;
             }
             @page {
-                size: A4;
+                size: A4 portrait;
                 margin-top: 1in;
                 margin-left: 1in;
-                margin-bottom: 0.5in;
                 margin-right: 0.5in;
+                margin-bottom: 0.5in;
             }
             .no-print {
                 display: none !important;
             }
         }
-
-        /* Custom Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-            height: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #94a3b8;
-            border-radius: 4px;
-        }
-        ::-webkit-scrollbar-thumb:hover {
-            background: #64748b;
-        }
     </style>
 </head>
-<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col justify-between">
+<body class="text-gray-800 antialiased min-h-screen flex flex-col justify-between">
 
-    <!-- Global Loading Overlay -->
-    <div id="loadingOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex flex-col items-center justify-center text-white">
-        <div class="w-16 h-16 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
-        <p class="mt-4 text-lg font-semibold animate-pulse" id="loadingText">প্রসেসিং করা হচ্ছে...</p>
-    </div>
-
-    <!-- Alert / Custom Modal Popup -->
-    <div id="customModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full overflow-hidden transform transition-all scale-95 opacity-0 duration-200" id="modalContent">
-            <div id="modalHeader" class="bg-blue-600 px-6 py-4 text-white flex justify-between items-center">
-                <h3 id="modalTitle" class="text-lg font-bold">বিজ্ঞপ্তি</h3>
-                <button onclick="closeModal()" class="text-white/80 hover:text-white"><i class="fa-solid fa-xmark text-xl"></i></button>
-            </div>
-            <div class="p-6" id="modalBody">
-                <!-- Dynamic Modal Body Content -->
-            </div>
-            <div class="bg-gray-50 px-6 py-3 flex justify-end">
-                <button onclick="closeModal()" class="px-5 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition font-medium">ঠিক আছে</button>
-            </div>
-        </div>
-    </div>
-
-    <!-- Header / Navbar -->
-    <header class="bg-slate-900 text-white shadow-lg sticky top-0 z-40 border-b border-slate-700">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center gap-3">
-                    <div class="bg-blue-600 p-2 rounded-lg flex items-center justify-center">
-                        <i class="fa-solid fa-shield-halved text-2xl text-white"></i>
-                    </div>
-                    <div>
-                        <h1 class="font-bold text-base sm:text-lg leading-tight text-blue-400">NGPIMS পোর্টাল</h1>
-                        <p class="text-[11px] text-slate-300">বান্দরবান পার্বত্য জেলা পুলিশ</p>
-                    </div>
+    <!-- Header Navigation Bar -->
+    <header class="bg-blue-900 text-white shadow-lg sticky top-0 z-40 no-print">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <i class="fa-solid fa-shield-halved text-3xl text-yellow-400"></i>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold leading-tight">NGPIMS মোবাইল ও ই-মেইল পরিবর্তন পোর্টাল</h1>
+                    <p class="text-xs text-blue-200">পুলিশ সুপারের কার্যালয়, বান্দরবান পার্বত্য জেলা</p>
                 </div>
-
-                <!-- Logged In Navigation Tabs -->
-                <nav id="userNav" class="hidden flex items-center gap-1 sm:gap-2">
-                    <button id="tabEntryBtn" onclick="switchTab('entry')" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-blue-600 text-white shadow flex items-center gap-1.5">
-                        <i class="fa-solid fa-user-plus"></i> <span class="hidden md:inline">ডাটা এন্ট্রি</span>
-                    </button>
-                    <button id="tabManpowerBtn" onclick="switchTab('manpower')" class="px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-slate-800 flex items-center gap-1.5">
-                        <i class="fa-solid fa-users"></i> <span class="hidden md:inline">জনবল ডাটা</span>
-                    </button>
-
-                    <!-- Admin / Developer Tabs -->
-                    <div id="adminTabs" class="hidden flex items-center gap-1 sm:gap-2 border-l border-slate-700 pl-2">
-                        <button id="tabAllDataBtn" onclick="switchTab('allData')" class="px-2.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-slate-800 flex items-center gap-1">
-                            <i class="fa-solid fa-database"></i> <span class="hidden lg:inline">অল ডাটাবেজ</span>
-                        </button>
-                        <button id="tabStatsBtn" onclick="switchTab('stats')" class="px-2.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-slate-800 flex items-center gap-1">
-                            <i class="fa-solid fa-chart-pie"></i> <span class="hidden lg:inline">পরিসংখ্যান</span>
-                        </button>
-                        <button id="tabUsersBtn" onclick="switchTab('users')" class="px-2.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-slate-800 flex items-center gap-1">
-                            <i class="fa-solid fa-user-gear"></i> <span class="hidden lg:inline">ইউজার</span>
-                        </button>
-                        <button id="tabLogsBtn" onclick="switchTab('logs')" class="hidden px-2.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition text-amber-400 hover:text-amber-300 hover:bg-slate-800 flex items-center gap-1">
-                            <i class="fa-solid fa-list-check"></i> <span class="hidden lg:inline">লগস</span>
-                        </button>
-                    </div>
-
-                    <!-- User Info & Logout -->
-                    <div class="flex items-center gap-3 border-l border-slate-700 pl-3 ml-1">
-                        <div class="text-right hidden sm:block">
-                            <p id="navUserName" class="text-xs font-bold text-slate-200">ব্যবহারকারী</p>
-                            <p id="navUserUnit" class="text-[10px] text-blue-400 font-medium">ইউনিট</p>
-                        </div>
-                        <button onclick="handleLogout()" title="লগআউট করুন" class="p-2 bg-red-600/20 text-red-400 hover:bg-red-600 hover:text-white rounded-lg transition">
-                            <i class="fa-solid fa-power-off"></i>
-                        </button>
-                    </div>
-                </nav>
+            </div>
+            <div id="userInfoHeader" class="hidden flex items-center space-x-4">
+                <div class="text-right hidden sm:block">
+                    <p id="navUserName" class="font-bold text-sm text-yellow-300"></p>
+                    <p id="navUserRole" class="text-xs text-gray-200"></p>
+                </div>
+                <button onclick="logout()" class="bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg text-sm transition flex items-center gap-1 shadow">
+                    <i class="fa-solid fa-right-from-bracket"></i> লগআউট
+                </button>
             </div>
         </div>
     </header>
 
-    <!-- Main Content Container -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex-grow w-full">
+    <!-- Global Loading Overlay -->
+    <div id="loadingOverlay" class="fixed inset-0 bg-gray-900 bg-opacity-60 flex flex-col items-center justify-center z-50 hidden">
+        <div class="animate-spin rounded-full h-16 w-16 border-4 border-white border-t-yellow-400"></div>
+        <p id="loadingText" class="text-white mt-4 font-semibold text-lg">তথ্য লোড হচ্ছে, অনুগ্রহ করে অপেক্ষা করুন...</p>
+    </div>
 
-        <!-- AUTH SECTION (REGISTER & LOGIN) -->
-        <div id="authSection" class="max-w-xl mx-auto">
+    <!-- Alert Modal / Popup -->
+    <div id="customModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden no-print px-4">
+        <div class="bg-white rounded-xl shadow-2xl max-w-md w-full p-6 transform transition-all">
+            <div class="flex items-center justify-between border-b pb-3">
+                <h3 id="modalTitle" class="text-lg font-bold text-gray-800">বার্তা</h3>
+                <button onclick="closeModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+            </div>
+            <div class="py-4">
+                <p id="modalBody" class="text-gray-600 text-base whitespace-pre-line"></p>
+            </div>
+            <div class="flex justify-end pt-2">
+                <button onclick="closeModal()" class="bg-blue-800 text-white px-5 py-2 rounded-lg hover:bg-blue-900 font-semibold text-sm">ঠিক আছে</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <main class="max-w-7xl mx-auto px-2 sm:px-4 py-6 flex-grow w-full">
+
+        <!-- AUTH SECTION (LOGIN & REGISTRATION SWITCHABLE) -->
+        <div id="authSection" class="max-w-4xl mx-auto">
             
-            <!-- Auth Toggle Header -->
-            <div class="bg-white p-2 rounded-t-2xl shadow-md border-b border-gray-100 flex gap-2">
-                <button id="showLoginBtn" onclick="toggleAuthForm('login')" class="flex-1 py-3 text-center rounded-xl font-bold transition text-blue-600 bg-blue-50 border border-blue-200 shadow-sm">
-                    <i class="fa-solid fa-right-to-bracket mr-2"></i>লগইন ফরম
-                </button>
-                <button id="showRegBtn" onclick="toggleAuthForm('register')" class="flex-1 py-3 text-center rounded-xl font-bold transition text-gray-500 hover:bg-gray-50">
-                    <i class="fa-solid fa-user-plus mr-2"></i>রেজিস্ট্রেশন ফরম
-                </button>
-            </div>
-
-            <!-- REGISTRATION FORM -->
-            <div id="regFormContainer" class="hidden bg-white p-6 sm:p-8 rounded-b-2xl shadow-xl border border-gray-100">
-                <h2 class="text-xl font-bold text-slate-800 mb-2 pb-2 border-b text-center">ইউনিট আইডি রেজিস্ট্রেশন</h2>
-                <form id="regForm" onsubmit="handleRegistration(event)" class="space-y-4">
+            <!-- LOGIN VIEW (Default) -->
+            <div id="loginViewCard" class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-slate-800 to-gray-900 text-white p-4 sm:p-6 flex justify-between items-center">
                     <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">ইউনিটের নাম <span class="text-red-500">*</span></label>
-                        <select id="regUnit" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-gray-50">
-                            <option value="">-- ইউনিট নির্বাচন করুন --</option>
-                        </select>
+                        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-right-to-bracket text-yellow-400"></i> সিস্টেম লগইন</h2>
+                        <p class="text-xs text-gray-300 mt-1">আপনার বিপি ও পাসওয়ার্ড প্রদান করে লগইন করুন</p>
                     </div>
-                    <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">ইউনিট প্রধানের বিপি (BP সহ ১২ ডিজিট) <span class="text-red-500">*</span></label>
-                        <input type="text" id="regBp" maxlength="12" placeholder="BPXXXXXXXXXX" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono uppercase" oninput="formatBPInput(this)">
-                    </div>
-                    <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">নাম <span class="text-red-500">*</span></label>
-                        <input type="text" id="regName" placeholder="পূর্ণ নাম লিখুন" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
-                    </div>
-                    <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">পদ <span class="text-red-500">*</span></label>
-                        <select id="regDesignation" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-gray-50">
-                            <option value="">-- পদ নির্বাচন করুন --</option>
-                            <option value="অতিরিক্ত পুলিশ সুপার">অতিরিক্ত পুলিশ সুপার</option>
-                            <option value="সহকারি পুলিশ সুপার">সহকারি পুলিশ সুপার</option>
-                            <option value="অফিসার ইনচার্জ">অফিসার ইনচার্জ</option>
-                            <option value="ইনচার্জ">ইনচার্জ</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">পাসওয়ার্ড <span class="text-red-500">*</span></label>
-                        <input type="password" id="regPassword" required placeholder="পাসওয়ার্ড লিখুন" class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    <button onclick="switchAuthView('register')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-user-plus"></i> নতুন ইউনিট রেজিস্ট্রেশন
+                    </button>
+                </div>
+                <form id="loginForm" onsubmit="handleLogin(event)" class="p-4 sm:p-6 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি নম্বর <span class="text-red-500">*</span></label>
+                            <input type="text" id="loginBP" placeholder="e.g. BP9920229900" maxlength="12" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">পাসওয়ার্ড <span class="text-red-500">*</span></label>
+                            <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold shadow-lg shadow-blue-500/30 transition duration-200 mt-2">
-                        <i class="fa-solid fa-check-circle mr-2"></i>রেজিস্ট্রেশন সম্পূর্ণ করুন
+                    <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg space-y-1 text-xs text-blue-900 font-medium">
+                        <p class="font-bold text-sm text-blue-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশাবলী:</p>
+                        <p>১. ইউনিটে কর্মরত সকল পুলিশ সদস্যদের তথ্য যাচাই করতে হবে।</p>
+                        <p>২. যাদের মোবাইল নম্বর বা ই-মেইল নাই বা ভূল আছে পরিবর্তন করতে হবে তাদের তথ্যাদি এন্ট্রি দিতে হবে।</p>
+                        <p>৩. পরে পুলিশ সদস্যদের মোবাইল নম্বর ও ই-মেইল পরিবর্তন করা যাবে না।</p>
+                        <p>৪. পরবর্তীতে ভূল পরিলক্ষিত হলে বর্ণিত পুলিশ সদস্য, নিজ ইউনিট ইনচার্জ ও মুন্সি/অপারেটরদের উপর দায় বর্তায়বে।</p>
+                        <p>৫. সকল পুলিশ সদস্যদের রুল কলের মাধ্যমে অবহিত করতে হবে।</p>
+                        <p>৬. বিপি নম্বরের নমুনা হচ্ছে <strong>BP9920229900</strong> মাঝখানে স্পেস বা চিহ্ন হবে না, বড় অক্ষরে BP লিখতে হবে।</p>
+                        <p class="text-red-600 font-bold">৭. কারো তথ্য ভূল এন্ট্রি হলে ০১৬৪১৬৬৩৫৯৬ এ যোগাযোগ করতে হবে।</p>
+                    </div>
+
+                    <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-lg shadow-md transition text-center flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-lock-open"></i> লগইন করুন
                     </button>
                 </form>
-
-                <!-- Instructions for Registration -->
-                <div class="mt-6 p-4 bg-amber-50 border-l-4 border-amber-500 rounded-r-lg text-amber-900 text-xs leading-relaxed space-y-1.5">
-                    <p class="font-bold text-amber-950 text-sm mb-1"><i class="fa-solid fa-circle-info mr-1"></i> নির্দেশনাবলী:</p>
-                    <p>১. প্রতিটি ইউনিট হতে ইউনিট প্রধানের বিপি ও অন্যান্য তথ্য দিয়ে আইডি রেজিট্রেশন করতে হবে।</p>
-                    <p>২. একই ইউনিটে একাদিক আইডি রেজিস্ট্রেশন করা যাবে না।</p>
-                    <p>৩. প্রতিটি ইউনিট হতে ফরওয়াডিং প্রিন্ট করে রিজার্ভ অফিসে প্রেরণ করতে হবে।</p>
-                </div>
             </div>
 
-            <!-- LOGIN FORM -->
-            <div id="loginFormContainer" class="bg-white p-6 sm:p-8 rounded-b-2xl shadow-xl border border-gray-100">
-                <h2 class="text-xl font-bold text-slate-800 mb-2 pb-2 border-b text-center">পোর্টাল লগইন</h2>
-                <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <!-- REGISTRATION VIEW (Hidden by Default) -->
+            <div id="registerViewCard" class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden hidden">
+                <div class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white p-4 sm:p-6 flex justify-between items-center">
                     <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">বিপি নম্বর (BP সহ ১২ ডিজিট)</label>
-                        <input type="text" id="loginBp" maxlength="12" placeholder="BPXXXXXXXXXX" required class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono uppercase" oninput="formatBPInput(this)">
+                        <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-user-plus text-yellow-400"></i> ইউনিট প্রধান আইডি রেজিস্ট্রেশন ফরম</h2>
+                        <p class="text-xs text-blue-200 mt-1">রেজিস্ট্রেশনের জন্য সঠিক তথ্য প্রদান করুন</p>
                     </div>
-                    <div>
-                        <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">পাসওয়ার্ড</label>
-                        <input type="password" id="loginPassword" required placeholder="পাসওয়ার্ড লিখুন" class="w-full px-4 py-2.5 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                    <button onclick="switchAuthView('login')" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
+                        <i class="fa-solid fa-arrow-left"></i> লগইন পেজে ফিরে যান
+                    </button>
+                </div>
+                <form id="registrationForm" onsubmit="handleRegistration(event)" class="p-4 sm:p-6 space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">ইউনিটের নাম <span class="text-red-500">*</span></label>
+                            <select id="regUnit" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="">ইউনিট নির্বাচন করুন</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">পদমর্যাদা <span class="text-red-500">*</span></label>
+                            <select id="regDesignation" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="">পদবি নির্বাচন করুন</option>
+                                <option value="অতিরিক্ত পুলিশ সুপার">অতিরিক্ত পুলিশ সুপার</option>
+                                <option value="সহকারি পুলিশ সুপার">সহকারি পুলিশ সুপার</option>
+                                <option value="অফিসার ইনচার্জ">অফিসার ইনচার্জ</option>
+                                <option value="ইনচার্জ">ইনচার্জ</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি (BP সহ ১২ ডিজিট) <span class="text-red-500">*</span></label>
+                            <input type="text" id="regBP" placeholder="e.g. BP9920229900" maxlength="12" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">ইউনিট প্রধানের নাম <span class="text-red-500">*</span></label>
+                            <input type="text" id="regName" placeholder="নাম লিখুন" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">পাসওয়ার্ড <span class="text-red-500">*</span></label>
+                            <input type="password" id="regPassword" placeholder="পাসওয়ার্ড লিখুন" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                        </div>
                     </div>
 
-                    <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-3 rounded-lg font-bold shadow-lg shadow-emerald-500/30 transition duration-200">
-                        <i class="fa-solid fa-right-to-bracket mr-2"></i>লগইন করুন
+                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg space-y-1 text-xs text-amber-900 font-medium">
+                        <p class="font-bold text-sm text-amber-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> রেজিস্ট্রেশন নির্দেশাবলী:</p>
+                        <p>১. প্রতিটি ইউনিট হতে ইউনিট প্রধানের বিপি ও অন্যান্য তথ্য দিয়ে আইডি রেজিস্ট্রেশন করতে হবে।</p>
+                        <p>২. একই ইউনিটে একাধিক আইডি রেজিস্ট্রেশন করা যাবে না।</p>
+                        <p>৩. প্রতিটি ইউনিট হতে ফরওয়ার্ডিং প্রিন্ট করে রিজার্ভ অফিসে প্রেরণ করতে হবে।</p>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-lg shadow-md transition text-center flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-user-check"></i> আইডি রেজিস্ট্রেশন করুন
                     </button>
                 </form>
-
-                <!-- Instructions for Login -->
-                <div class="mt-6 p-4 bg-blue-50 border-l-4 border-blue-500 rounded-r-lg text-blue-950 text-xs leading-relaxed space-y-1.5">
-                    <p class="font-bold text-blue-950 text-sm mb-1"><i class="fa-solid fa-circle-info mr-1"></i> গুরুত্বপূর্ণ নির্দেশনাবলী:</p>
-                    <p>১. ইউনিটে কর্মরত সকল পুলিশ সদস্যদের তথ্য যাচাই করতে হবে।</p>
-                    <p>২. যাদের মোবাইল নম্বর বা ই-মেইল নাই বা ভূল আছে পরিবর্তন করতে হবে তাদের তথ্যাদি এন্ট্রি দিতে হবে।</p>
-                    <p>৩. পরে পুলিশ সদস্যদের মোবাইল নম্বর ও ই-মেইল পরিবর্তন করা যাবে না।</p>
-                    <p>৪. পরবর্তীতে ভূল পরিলক্ষিত হলে বর্ণিত পুলিশ সদস্য, নিজ ইউনিট ইনচার্জ ও মুন্সি/অপারেটরদের উপর দায় বর্তায়বে।</p>
-                    <p>৫. সকল পুলিশ সদস্যদের রুল কলের মাধ্যমে অবহিত করতে হবে।</p>
-                    <p>৬. বিপি নম্বরের নমুনা হচ্ছে <b>BP9920229900</b> মাঝখানে স্পেস বা চিহ্ন হবে না, বড় অক্ষরে <b>BP</b> লিখতে হবে।</p>
-                    <p>৭. কারো তথ্য ভূল এন্ট্রি হলে <b class="text-blue-900 font-bold bg-blue-200 px-1.5 py-0.5 rounded">০১৬৪১৬৬৩৫৯৬</b> এ যোগাযোগ করতে হবে।</p>
-                </div>
             </div>
 
         </div>
 
-        <!-- DASHBOARD CONTAINER -->
-        <div id="dashboardSection" class="hidden">
+        <!-- DASHBOARD CONTAINER (HIDDEN UNTIL LOGGED IN) -->
+        <div id="dashboardSection" class="hidden space-y-6">
 
-            <!-- TAB 1: DATA ENTRY TAB -->
-            <div id="entryTab" class="tab-content max-w-3xl mx-auto">
-                <div class="bg-white p-6 sm:p-8 rounded-2xl shadow-xl border border-slate-200">
-                    <div class="flex items-center justify-between pb-4 mb-6 border-b">
-                        <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
-                            <i class="fa-solid fa-user-plus text-blue-600"></i> NGPIMS তথ্য এন্ট্রি ফরম
-                        </h2>
-                        <span id="entryFormUnitBadge" class="bg-blue-100 text-blue-800 text-xs font-bold px-3 py-1 rounded-full border border-blue-200">
-                            ইউনিট: -
-                        </span>
-                    </div>
+            <!-- Horizontal Scrollable Tabs Header -->
+            <div class="bg-white rounded-xl shadow-md p-2 border border-gray-200">
+                <nav id="tabsNav" class="flex space-x-2 overflow-x-auto no-scrollbar whitespace-nowrap py-1 px-1" aria-label="Tabs">
+                    <!-- Dynamic Tabs loaded via JS based on role -->
+                </nav>
+            </div>
 
+            <!-- TAB 1: DATA ENTRY (For Users) -->
+            <div id="tabEntry" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6">
+                    <h3 class="text-lg font-bold text-blue-900 border-b pb-3 mb-4 flex items-center gap-2">
+                        <i class="fa-solid fa-pen-to-square text-blue-600"></i> পুলিশ সদস্যের মোবাইল ও ই-মেইল সংশোধন এন্ট্রি ফরম
+                    </h3>
                     <form id="dataEntryForm" onsubmit="handleDataEntry(event)" class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">বিপি নম্বর (BP সহ ১২ ডিজিট) <span class="text-red-500">*</span></label>
-                                <input type="text" id="entryBp" maxlength="12" placeholder="BPXXXXXXXXXX" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono uppercase" oninput="formatBPInput(this)">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি নম্বর (১২ ডিজিট) <span class="text-red-500">*</span></label>
+                                <input type="text" id="entryBP" placeholder="e.g. BP1234567890" maxlength="12" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
-                                <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">পদবি <span class="text-red-500">*</span></label>
-                                <select id="entryRank" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm bg-gray-50">
-                                    <option value="">-- পদবি নির্বাচন করুন --</option>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">পদবি <span class="text-red-500">*</span></label>
+                                <select id="entryDesignation" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                    <option value="">পদবি নির্বাচন করুন</option>
+                                    <option value="ইন্সপেক্টর (নিরস্ত্র)">ইন্সপেক্টর (নিরস্ত্র)</option>
+                                    <option value="ইন্সপেক্টর (সশস্ত্র)">ইন্সপেক্টর (সশস্ত্র)</option>
+                                    <option value="ইন্সপেক্টর (টিটি)">ইন্সপেক্টর (টিটি)</option>
+                                    <option value="এসআই (নিরস্ত্র)">এসআই (নিরস্ত্র)</option>
+                                    <option value="এসআই (সশস্ত্র)">এসআই (সশস্ত্র)</option>
+                                    <option value="টিএসআই">টিএসআই</option>
+                                    <option value="সার্জেন্ট">সার্জেন্ট</option>
+                                    <option value="এএসআই (নিরস্ত্র)">এএসআই (নিরস্ত্র)</option>
+                                    <option value="এএসআই (সশস্ত্র)">এএসআই (সশস্ত্র)</option>
+                                    <option value="এটিএসআই">এটিএসআই</option>
+                                    <option value="নায়েক">নায়েক</option>
+                                    <option value="কনস্টেবল">কনস্টেবল</option>
                                 </select>
                             </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">ব্রাশ নং <span class="text-gray-400 font-normal">(ঐচ্ছিক)</span></label>
-                                <input type="text" id="entryBrushNo" placeholder="ব্রাশ নং লিখুন" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">ব্রাশ নং <span class="text-xs text-gray-400">(ঐচ্ছিক)</span></label>
+                                <input type="text" id="entryBrushNo" placeholder="ব্রাশ নম্বর" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
-                                <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">নাম <span class="text-red-500">*</span></label>
-                                <input type="text" id="entryName" placeholder="পুলিশ সদস্যের নাম" required class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">নতুন মোবাইল নম্বর <span class="text-amber-600 text-[11px]">(১১ ডিজিট)</span></label>
-                                <input type="tel" id="entryMobile" maxlength="11" placeholder="01XXXXXXXXX" pattern="[0-9]{11}" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm font-mono">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">নাম <span class="text-red-500">*</span></label>
+                                <input type="text" id="entryName" placeholder="পুলিশ সদস্যের নাম" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
-                                <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">নতুন ই-মেইল</label>
-                                <input type="email" id="entryEmail" placeholder="example@gmail.com" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">নতুন মোবাইল নম্বর (১১ ডিজিট)</label>
+                                <input type="text" id="entryMobile" placeholder="e.g. 01700000000" maxlength="11" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">নতুন ই-মেইল</label>
+                                <input type="email" id="entryEmail" placeholder="e.g. example@gmail.com" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                         </div>
-                        <p class="text-[11px] text-amber-700 bg-amber-50 p-2 rounded border border-amber-200">
-                            <i class="fa-solid fa-circle-exclamation mr-1"></i> দ্রষ্টব্য: নতুন মোবাইল নম্বর ও নতুন ই-মেইল এর মধ্যে যে কোনো একটি অবশ্যই পূরণ করতে হবে।
-                        </p>
 
                         <div>
-                            <label class="block text-xs sm:text-sm font-semibold text-gray-700 mb-1">মন্তব্য <span class="text-gray-400 font-normal">(ঐচ্ছিক)</span></label>
-                            <textarea id="entryRemarks" rows="2" placeholder="প্রয়োজনীয় মন্তব্য লিখুন" class="w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none text-sm"></textarea>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">মন্তব্য <span class="text-xs text-gray-400">(ঐচ্ছিক)</span></label>
+                            <textarea id="entryComments" rows="2" placeholder="কোন মন্তব্য থাকলে লিখুন..." class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
                         </div>
 
-                        <div class="pt-2">
-                            <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-lg font-bold shadow-lg shadow-blue-500/30 transition duration-200">
-                                <i class="fa-solid fa-save mr-2"></i>ডাটা সেভ করুন
-                            </button>
-                        </div>
+                        <p class="text-xs text-red-600 font-semibold">* নতুন মোবাইল নম্বর ও নতুন ই-মেইল এর মধ্যে যে কোন একটি অবশ্যই পূরণ করতে হবে।</p>
+
+                        <button type="submit" class="bg-green-700 hover:bg-green-800 text-white font-bold px-6 py-2.5 rounded-lg shadow transition flex items-center gap-2">
+                            <i class="fa-solid fa-floppy-disk"></i> ডাটা সেইভ করুন
+                        </button>
                     </form>
                 </div>
             </div>
 
-            <!-- TAB 2: MANPOWER DATA TAB (Unit Data List + Forwarding Print) -->
-            <div id="manpowerTab" class="tab-content hidden space-y-6">
-                <!-- Action Controls Header -->
-                <div class="bg-white p-4 rounded-xl shadow border border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-4">
-                    <div>
-                        <h3 class="text-lg font-bold text-slate-800">ইউনিটের জনবল ডাটা তালিকা</h3>
-                        <p class="text-xs text-slate-500">পদবি সমূহের নির্ধারিত শর্টিং ক্রমানুসারে সাজানো তথ্য</p>
-                    </div>
-                    <button onclick="printForwardingLetter()" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-2.5 rounded-lg font-bold shadow transition flex items-center justify-center gap-2">
-                        <i class="fa-solid fa-print text-lg"></i> অফিশিয়াল ফরওয়ার্ডিং প্রিন্ট
-                    </button>
-                </div>
-
-                <!-- Table Container -->
-                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200 overflow-x-auto">
-                    <div id="unitDataList">
-                        <!-- Rendered Table -->
-                    </div>
-                </div>
-            </div>
-
-            <!-- TAB 3: ALL DATABASE TAB (ADMIN / DEVELOPER) -->
-            <div id="allDataTab" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
-                    <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
+            <!-- TAB 2: USER MANPOWER DATA & FORWARDING PRINT (For Users) -->
+            <div id="tabManpower" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
                         <div>
-                            <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-database text-blue-600 mr-2"></i>অল ডাটাবেজ</h3>
-                            <p class="text-xs text-slate-500">সকল ইউনিটের সংরক্ষিত তথ্যসমূহ</p>
+                            <h3 class="text-lg font-bold text-blue-900">ইউনিট এন্ট্রিকৃত জনবল ডাটা ও ফরওয়ার্ডিং</h3>
+                            <p class="text-xs text-gray-500">আপনার ইউনিট হতে এন্ট্রিকৃত সকল ডাটার তালিকা</p>
                         </div>
-                        <div class="flex flex-wrap gap-2 w-full md:w-auto">
-                            <input type="text" id="allDataSearch" placeholder="খুঁজুন (BP/নাম/ইউনিট)..." onkeyup="filterAllData()" class="px-4 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none flex-grow md:w-64">
-                            <button onclick="exportToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-sm shadow transition flex items-center gap-2">
-                                <i class="fa-solid fa-file-excel"></i> Excel ডাউনলোড
-                            </button>
-                        </div>
+                        <button onclick="window.print()" class="bg-blue-800 hover:bg-blue-900 text-white font-bold px-4 py-2 rounded-lg shadow transition flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-print"></i> ফরওয়ার্ডিং প্রিন্ট করুন
+                        </button>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 uppercase font-semibold border-b">
-                                    <th class="p-3">ক্রমিক</th>
-                                    <th class="p-3 cursor-pointer hover:bg-slate-200" onclick="sortAllData('bp')">বিপি <i class="fa-solid fa-sort"></i></th>
-                                    <th class="p-3 cursor-pointer hover:bg-slate-200" onclick="sortAllData('name')">নাম <i class="fa-solid fa-sort"></i></th>
-                                    <th class="p-3 cursor-pointer hover:bg-slate-200" onclick="sortAllData('rank')">পদবি <i class="fa-solid fa-sort"></i></th>
+                    <div class="overflow-x-auto border rounded-lg">
+                        <table class="w-full text-sm text-left text-gray-700">
+                            <thead class="bg-slate-800 text-white font-semibold">
+                                <tr>
+                                    <th class="p-3">ক্রম</th>
+                                    <th class="p-3">বিপি</th>
+                                    <th class="p-3">পদবি</th>
                                     <th class="p-3">ব্রাশ নং</th>
-                                    <th class="p-3 cursor-pointer hover:bg-slate-200" onclick="sortAllData('unit')">ইউনিট <i class="fa-solid fa-sort"></i></th>
-                                    <th class="p-3">মোবাইল নম্বর</th>
-                                    <th class="p-3">ই-মেইল</th>
+                                    <th class="p-3">নাম</th>
+                                    <th class="p-3">ইউনিট</th>
+                                    <th class="p-3">নতুন মোবাইল নম্বর</th>
+                                    <th class="p-3">নতুন ই-মেইল</th>
                                     <th class="p-3">মন্তব্য</th>
-                                    <th class="p-3 text-center">অ্যাকশন</th>
                                 </tr>
                             </thead>
-                            <tbody id="allDataTableBody" class="divide-y divide-gray-200">
-                                <!-- Data Rows -->
+                            <tbody id="userManpowerTableBody" class="divide-y divide-gray-200 bg-white">
+                                <!-- Dynamic rows -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 4: STATISTICS TAB (ADMIN / DEVELOPER) -->
-            <div id="statsTab" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
-                    <div class="flex justify-between items-center pb-4 mb-4 border-b">
+            <!-- TAB 3: ADMIN/DEV ALL DATABASE -->
+            <div id="tabAllDatabase" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
                         <div>
-                            <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-chart-pie text-blue-600 mr-2"></i>ইউনিটভিত্তিক পরিসংখ্যান</h3>
-                            <p class="text-xs text-slate-500">ইউনিট ও পদবি অনুসারে সর্বমোট তথ্য বিবরণী</p>
+                            <h3 class="text-lg font-bold text-blue-900">অল ডাটা বেইজ (All Registered Data)</h3>
+                            <p class="text-xs text-gray-500">জেলার সকল ইউনিট হতে প্রেরিত সংশোধিত ডাটাবেজ</p>
                         </div>
-                        <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg font-bold text-sm shadow transition flex items-center gap-2">
-                            <i class="fa-solid fa-print"></i> পরিসংখ্যান প্রিন্ট
+                        <button onclick="exportToExcel('allDataTable', 'NGPIMS_All_Data')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-4 py-2 rounded-lg shadow transition flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-file-excel"></i> Excel Download
                         </button>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-center border-collapse text-xs">
-                            <thead id="statsTableHeader">
-                                <!-- Dynamic Headers -->
+                    <div class="overflow-x-auto border rounded-lg max-h-[500px]">
+                        <table id="allDataTable" class="w-full text-sm text-left text-gray-700">
+                            <thead class="bg-slate-800 text-white font-semibold sticky top-0">
+                                <tr>
+                                    <th class="p-3 cursor-pointer" onclick="sortAllData('index')">ক্রম <i class="fa-solid fa-sort"></i></th>
+                                    <th class="p-3 cursor-pointer" onclick="sortAllData('BP')">বিপি <i class="fa-solid fa-sort"></i></th>
+                                    <th class="p-3 cursor-pointer" onclick="sortAllData('Designation')">পদবি <i class="fa-solid fa-sort"></i></th>
+                                    <th class="p-3">ব্রাশ নং</th>
+                                    <th class="p-3 cursor-pointer" onclick="sortAllData('Name')">নাম <i class="fa-solid fa-sort"></i></th>
+                                    <th class="p-3 cursor-pointer" onclick="sortAllData('Unit')">ইউনিট <i class="fa-solid fa-sort"></i></th>
+                                    <th class="p-3">নতুন মোবাইল নম্বর</th>
+                                    <th class="p-3">নতুন ই-মেইল</th>
+                                    <th class="p-3">মন্তব্য</th>
+                                    <th class="p-3 text-center">অ্যাকশন</th>
+                                </tr>
                             </thead>
-                            <tbody id="statsTableBody" class="divide-y divide-gray-200">
+                            <tbody id="allDataTableBody" class="divide-y divide-gray-200 bg-white">
+                                <!-- Dynamic rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 4: UNIT WISE DATA (Admin/Dev) -->
+            <div id="tabUnitWise" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-center gap-4 border-b pb-3">
+                        <h3 class="text-lg font-bold text-blue-900">ইউনিট ভিত্তিক ডাটা ফিল্টার</h3>
+                        <div class="flex items-center gap-2 w-full sm:w-auto">
+                            <label class="text-sm font-semibold whitespace-nowrap">ইউনিট:</label>
+                            <select id="filterUnitSelect" onchange="renderUnitWiseData()" class="border border-gray-300 rounded-lg p-2 text-sm focus:outline-none w-full sm:w-64">
+                                <option value="">সকল ইউনিট</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto border rounded-lg">
+                        <table class="w-full text-sm text-left text-gray-700">
+                            <thead class="bg-slate-800 text-white font-semibold">
+                                <tr>
+                                    <th class="p-3">ক্রম</th>
+                                    <th class="p-3">বিপি</th>
+                                    <th class="p-3">পদবি</th>
+                                    <th class="p-3">ব্রাশ নং</th>
+                                    <th class="p-3">নাম</th>
+                                    <th class="p-3">ইউনিট</th>
+                                    <th class="p-3">নতুন মোবাইল</th>
+                                    <th class="p-3">নতুন ই-মেইল</th>
+                                    <th class="p-3">মন্তব্য</th>
+                                </tr>
+                            </thead>
+                            <tbody id="unitWiseTableBody" class="divide-y divide-gray-200 bg-white">
                                 <!-- Dynamic Rows -->
                             </tbody>
                         </table>
@@ -405,1086 +388,1010 @@
                 </div>
             </div>
 
-            <!-- TAB 5: USER MANAGEMENT TAB (ADMIN / DEVELOPER) -->
-            <div id="usersTab" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
-                    <div class="pb-4 mb-4 border-b">
-                        <h3 class="text-xl font-bold text-slate-800"><i class="fa-solid fa-user-gear text-blue-600 mr-2"></i>ইউজার অ্যাকাউন্ট ম্যানেজমেন্ট</h3>
-                        <p class="text-xs text-slate-500">রেজিস্ট্রেশন করা সকল আইডির তালিকা ও অ্যাকশন</p>
+            <!-- TAB 5: STATISTICS (Admin/Dev) -->
+            <div id="tabStats" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-blue-900">ইউনিট ও পদবি ভিত্তিক পরিসংখ্যান</h3>
+                            <p class="text-xs text-gray-500">কোন ইউনিটে কতজন পদবীর তথ্য সংশোধন এন্ট্রি হয়েছে তার বিবরণ</p>
+                        </div>
+                        <button onclick="printStats()" class="bg-blue-800 hover:bg-blue-900 text-white font-bold px-4 py-2 rounded-lg shadow transition flex items-center gap-2 text-sm">
+                            <i class="fa-solid fa-print"></i> পরিসংখ্যান প্রিন্ট
+                        </button>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs sm:text-sm">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 border-b">
+                    <div id="statsPrintArea" class="overflow-x-auto border rounded-lg">
+                        <table class="w-full text-xs text-center border-collapse border border-gray-300">
+                            <thead class="bg-slate-800 text-white font-semibold">
+                                <tr class="border-b border-gray-300">
+                                    <th class="p-2 border">ক্রম</th>
+                                    <th class="p-2 border text-left">ইউনিটের নাম</th>
+                                    <th class="p-2 border">ইন্সপেক্টর (নিরস্ত্র)</th>
+                                    <th class="p-2 border">ইন্সপেক্টর (সশস্ত্র)</th>
+                                    <th class="p-2 border">ইন্সপেক্টর (টিটি)</th>
+                                    <th class="p-2 border">এসআই (নিরস্ত্র)</th>
+                                    <th class="p-2 border">এসআই (সশস্ত্র)</th>
+                                    <th class="p-2 border">টিএসআই</th>
+                                    <th class="p-2 border">সার্জেন্ট</th>
+                                    <th class="p-2 border">এএসআই (নিরস্ত্র)</th>
+                                    <th class="p-2 border">এএসআই (সশস্ত্র)</th>
+                                    <th class="p-2 border">এটিএসআই</th>
+                                    <th class="p-2 border">নায়েক</th>
+                                    <th class="p-2 border">কনস্টেবল</th>
+                                    <th class="p-2 border bg-blue-900">মোট</th>
+                                </tr>
+                            </thead>
+                            <tbody id="statsTableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                            <tfoot id="statsTableFoot" class="bg-gray-100 font-bold border-t-2 border-gray-400">
+                                <!-- Total Row -->
+                            </tfoot>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 6: USER MANAGEMENT (Admin/Dev) -->
+            <div id="tabUsers" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
+                    <h3 class="text-lg font-bold text-blue-900 border-b pb-3">রেজিস্ট্রিকৃত ইউজার আইডি তালিকা</h3>
+                    <div class="overflow-x-auto border rounded-lg">
+                        <table class="w-full text-sm text-left text-gray-700">
+                            <thead class="bg-slate-800 text-white font-semibold">
+                                <tr>
+                                    <th class="p-3">ক্রম</th>
                                     <th class="p-3">বিপি</th>
-                                    <th class="p-3">নাম</th>
+                                    <th class="p-3">ইউনিটের নাম</th>
+                                    <th class="p-3">ইউনিট প্রধানের নাম</th>
                                     <th class="p-3">পদবি</th>
-                                    <th class="p-3">ইউনিট</th>
-                                    <th class="p-3">রোল</th>
                                     <th class="p-3">স্ট্যাটাস</th>
                                     <th class="p-3 text-center">অ্যাকশন</th>
                                 </tr>
                             </thead>
-                            <tbody id="usersTableBody" class="divide-y divide-gray-200">
-                                <!-- User Rows -->
+                            <tbody id="usersTableBody" class="divide-y divide-gray-200 bg-white">
+                                <!-- Dynamic Rows -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <!-- TAB 6: LOGS TAB (DEVELOPER EXCLUSIVE) -->
-            <div id="logsTab" class="tab-content hidden space-y-6">
-                <div class="bg-white p-6 rounded-2xl shadow-xl border border-slate-200">
-                    <div class="flex flex-col sm:flex-row justify-between items-center pb-4 mb-4 border-b gap-4">
+            <!-- TAB 7: RECYCLE BIN -->
+            <div id="tabRecycleBin" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
                         <div>
-                            <h3 class="text-xl font-bold text-amber-600 flex items-center gap-2">
-                                <i class="fa-solid fa-list-check"></i> সিস্টেম একটিভিটি লগস (Developer Exclusive)
+                            <h3 class="text-lg font-bold text-red-700 flex items-center gap-2">
+                                <i class="fa-solid fa-trash-can"></i> রিসাইকেল বিন (Recycle Bin)
                             </h3>
-                            <p class="text-xs text-slate-500">কোন আইডি থেকে কি কি কাজ সম্পাদন করা হচ্ছে তার বিবরণ</p>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="exportLogsToExcel()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2 rounded-lg font-bold text-xs shadow transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-file-excel"></i> Excel লগ ডাউনলোড
-                            </button>
-                            <button onclick="window.print()" class="bg-slate-800 hover:bg-slate-900 text-white px-4 py-2 rounded-lg font-bold text-xs shadow transition flex items-center gap-1.5">
-                                <i class="fa-solid fa-print"></i> লগ প্রিন্ট
-                            </button>
+                            <p class="text-xs text-gray-500">মুছে ফেলা ডাটা রিস্টোর বা স্থায়ীভাবে মুছে ফেলার জায়গা</p>
                         </div>
                     </div>
 
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-left border-collapse text-xs">
-                            <thead>
-                                <tr class="bg-slate-100 text-slate-700 border-b uppercase">
-                                    <th class="p-2.5">সময় ও তারিখ</th>
-                                    <th class="p-2.5">ইউজার বিপি</th>
-                                    <th class="p-2.5">নাম ও পদবি</th>
-                                    <th class="p-2.5">ইউনিট</th>
-                                    <th class="p-2.5">একটিভিটি বিবরন</th>
+                    <div class="overflow-x-auto border rounded-lg">
+                        <table class="w-full text-sm text-left text-gray-700">
+                            <thead class="bg-gray-800 text-white font-semibold">
+                                <tr>
+                                    <th class="p-3">বিপি</th>
+                                    <th class="p-3">পদবি</th>
+                                    <th class="p-3">ব্রাশ নং</th>
+                                    <th class="p-3">নাম</th>
+                                    <th class="p-3">ইউনিট</th>
+                                    <th class="p-3">নতুন মোবাইল</th>
+                                    <th class="p-3">নতুন ই-মেইল</th>
+                                    <th class="p-3">ডিলিটের সময়</th>
+                                    <th class="p-3 text-center">অ্যাকশন</th>
                                 </tr>
                             </thead>
-                            <tbody id="logsTableBody" class="divide-y divide-gray-200">
-                                <!-- Dynamic System Logs -->
+                            <tbody id="recycleBinTableBody" class="divide-y divide-gray-200 bg-white">
+                                <!-- Dynamic Rows -->
                             </tbody>
                         </table>
                     </div>
                 </div>
             </div>
 
+            <!-- TAB 8: SYSTEM LOGS (Developer Only) -->
+            <div id="tabLogs" class="tab-content hidden">
+                <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
+                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
+                        <div>
+                            <h3 class="text-lg font-bold text-blue-900"><i class="fa-solid fa-list-check"></i> সিস্টেম অ্যাক্টিভিটি লগস (Logs)</h3>
+                            <p class="text-xs text-gray-500">কোন আইডি থেকে কি কি কার্যক্রম সম্পন্ন হয়েছে তার বিস্তারিত</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="exportToExcel('logsTable', 'NGPIMS_System_Logs')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-1.5 rounded-lg shadow text-xs flex items-center gap-1">
+                                <i class="fa-solid fa-file-excel"></i> Excel
+                            </button>
+                            <button onclick="window.print()" class="bg-blue-800 hover:bg-blue-900 text-white font-bold px-3 py-1.5 rounded-lg shadow text-xs flex items-center gap-1">
+                                <i class="fa-solid fa-print"></i> Print
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto border rounded-lg max-h-[500px]">
+                        <table id="logsTable" class="w-full text-sm text-left text-gray-700">
+                            <thead class="bg-slate-800 text-white font-semibold sticky top-0">
+                                <tr>
+                                    <th class="p-3">সময়</th>
+                                    <th class="p-3">ইউজার বিপি</th>
+                                    <th class="p-3">ইউজারের নাম</th>
+                                    <th class="p-3">অ্যাকশন/কাজ</th>
+                                    <th class="p-3">বিস্তারিত</th>
+                                </tr>
+                            </thead>
+                            <tbody id="logsTableBody" class="divide-y divide-gray-200 bg-white">
+                                <!-- Dynamic Rows -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- EDIT DATA MODAL -->
+        <div id="editModal" class="fixed inset-0 bg-gray-900 bg-opacity-50 flex items-center justify-center z-50 hidden no-print px-4">
+            <div class="bg-white rounded-xl shadow-2xl max-w-2xl w-full p-6 transform transition-all max-h-[90vh] overflow-y-auto">
+                <div class="flex items-center justify-between border-b pb-3">
+                    <h3 class="text-lg font-bold text-gray-800">তথ্য এডিট করুন</h3>
+                    <button onclick="closeEditModal()" class="text-gray-400 hover:text-gray-600 text-xl font-bold">&times;</button>
+                </div>
+                <form id="editDataForm" onsubmit="handleUpdateData(event)" class="py-4 space-y-4">
+                    <input type="hidden" id="editRowId">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি (BP সহ ১২ ডিজিট)</label>
+                            <input type="text" id="editBP" required maxlength="12" class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">পদবি</label>
+                            <select id="editDesignation" required class="w-full border border-gray-300 rounded-lg p-2">
+                                <option value="ইন্সপেক্টর (নিরস্ত্র)">ইন্সপেক্টর (নিরস্ত্র)</option>
+                                <option value="ইন্সপেক্টর (সশস্ত্র)">ইন্সপেক্টর (সশস্ত্র)</option>
+                                <option value="ইন্সপেক্টর (টিটি)">ইন্সপেক্টর (টিটি)</option>
+                                <option value="এসআই (নিরস্ত্র)">এসআই (নিরস্ত্র)</option>
+                                <option value="এসআই (সশস্ত্র)">এসআই (সশস্ত্র)</option>
+                                <option value="টিএসআই">টিএসআই</option>
+                                <option value="সার্জেন্ট">সার্জেন্ট</option>
+                                <option value="এএসআই (নিরস্ত্র)">এএসআই (নিরস্ত্র)</option>
+                                <option value="এএসআই (সশস্ত্র)">এএসআই (সশস্ত্র)</option>
+                                <option value="এটিএসআই">এটিএসআই</option>
+                                <option value="নায়েক">নায়েক</option>
+                                <option value="কনস্টেবল">কনস্টেবল</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">ব্রাশ নং</label>
+                            <input type="text" id="editBrushNo" class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">নাম</label>
+                            <input type="text" id="editName" required class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">নতুন মোবাইল</label>
+                            <input type="text" id="editMobile" maxlength="11" class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">নতুন ই-মেইল</label>
+                            <input type="email" id="editEmail" class="w-full border border-gray-300 rounded-lg p-2">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-semibold text-gray-700 mb-1">মন্তব্য</label>
+                        <textarea id="editComments" rows="2" class="w-full border border-gray-300 rounded-lg p-2"></textarea>
+                    </div>
+                    <div class="flex justify-end gap-2 pt-2 border-t">
+                        <button type="button" onclick="closeEditModal()" class="bg-gray-500 text-white px-4 py-2 rounded-lg font-semibold text-sm">বাতিল</button>
+                        <button type="submit" class="bg-blue-800 text-white px-5 py-2 rounded-lg hover:bg-blue-900 font-semibold text-sm">আপডেট করুন</button>
+                    </div>
+                </form>
+            </div>
         </div>
 
     </main>
 
-    <!-- PRINTABLE FORWARDING LETTER TEMPLATE -->
+    <!-- PRINT SECTION: FORWARDING LETTER -->
     <div id="printArea" class="hidden">
-        <div class="text-black text-[13px] leading-relaxed bangla-serif">
-            <!-- Left Margin 0.5 in padding for top address -->
-            <p class="text-base font-bold">বরাবর</p>
-            <p style="padding-left: 0.5in;" class="font-bold">পুলিশ সুপার</p>
-            <p style="padding-left: 0.5in;" class="font-bold">বান্দরবান পার্বত্য জেলা।</p>
-            <p class="mt-3 font-semibold">মাধ্যমঃ যথাযথ কর্তৃপক্ষ।</p>
-
-            <p class="mt-3 font-bold">বিষয়ঃ NGPIMS এ মোবাইল নম্বর ও ই-মেইল সংশোধন প্রসংগে।</p>
-            <p class="mt-1 font-semibold">সুত্রঃ রিজার্ভ অফিস, বান্দরবান এর স্মারক নং-৪৪৪/আরও, তারিখ-০২/১১/২০২৬খ্রি.।</p>
-
-            <p class="mt-4 font-bold text-sm">জনাব</p>
-
-            <p class="mt-2 text-justify">
-                <span style="display:inline-block; width: 0.5in;"></span>যথাবিহীত সম্মানপূর্বক বিনীত নিবেদন এই যে, <b id="printUnitName" class="font-bold"></b> এ কর্মরত পুলিশ সদস্যদের মধ্যে নিম্নেবর্ণিত পুলিশ সদস্যদের NGPIMS ডাটা বেইজ এ মোবাইল নম্বর ও ই-মেইল ভূল থাকায় প্রশাসনিক জঠিলতা সৃষ্টি হচ্ছে।
+        <div style="font-family: 'SolaimanLipi', sans-serif; font-size: 14px; line-height: 1.6; color: #000;">
+            <p>বরাবর</p>
+            <p style="padding-left: 0.5in;">পুলিশ সুপার</p>
+            <p style="padding-left: 0.5in;">বান্দরবান পার্বত্য জেলা।</p>
+            
+            <p style="margin-top: 10px;">মাধ্যমঃ যথাযথ কর্তৃপক্ষ।</p>
+            
+            <p style="margin-top: 15px; font-weight: bold;">বিষয়ঃ NGPIMS এ মোবাইল নম্বর ও ই-মেইল সংশোধন প্রসঙ্গে।</p>
+            
+            <p style="margin-top: 10px;">সুত্রঃ রিজার্ভ অফিস, বান্দরবান এর স্মারক নং-৪৪৪/আরও, তারিখ-০২/১১/২০২৬খ্রি.।</p>
+            
+            <p style="margin-top: 15px;">জনাব</p>
+            <p style="text-indent: 0.5in; text-align: justify; margin-top: 5px;">
+                যথাবিহীত সম্মানপূর্বক বিনীত নিবেদন এই যে, <span id="printUnitName"></span>, বান্দরবান পার্বত্য জেলায় কর্মরত কনস্টেবল হতে ইন্সপেক্টর পদমর্যাদার পুলিশ সদস্যদের মধ্যে নিম্নেবর্ণিত পুলিশ সদস্যদের NGPIMS ডাটা বেইজ এ মোবাইল নম্বর ও ই-মেইল ভূল/এন্ট্রি না থাকায় প্রশাসনিক জঠিলতা সৃষ্টি হচ্ছে।
+            </p>
+            
+            <p style="text-indent: 0.5in; text-align: justify; margin-top: 10px;">
+                এমতাবস্থায়, নিম্নে বর্ণিত পুলিশ সদস্যদের নামের পাশে উল্লেখিত মোবাইল নম্বর ও ই-মেইল NGPIMS ডাটা বেইজ এ আপডেটের পরবর্তী প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য অনুরোধ করা হলো।
             </p>
 
-            <p class="mt-2 text-justify">
-                <span style="display:inline-block; width: 0.5in;"></span>এমতাবস্থায়, নিম্নে বর্ণিত পুলিশ সদস্যদের নামের পাশে উল্লেখিত মোবাইল নম্বর ও ই-মেইল NGPIMS ডাটা বেইজ এ আপডেটের প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য অনুরোধ করা হলো।
-            </p>
-
-            <!-- Main Data Table -->
-            <table class="w-full border-collapse border border-black text-center text-xs my-4 font-sans">
+            <!-- Forwarding Table -->
+            <table style="width: 100%; border-collapse: collapse; margin-top: 15px; margin-bottom: 15px; font-size: 13px;" border="1">
                 <thead>
-                    <tr class="bg-gray-100 font-bold border-b border-black">
-                        <th class="border border-black p-1.5 w-10">ক্রমিক</th>
-                        <th class="border border-black p-1.5">পদবি / ব্রাশ নম্বর / নাম ও বিপি</th>
-                        <th class="border border-black p-1.5">ইউনিটের নাম</th>
-                        <th class="border border-black p-1.5">ইমেইল</th>
-                        <th class="border border-black p-1.5">মোবাইল নম্বর</th>
-                        <th class="border border-black p-1.5">মন্তব্য</th>
+                    <tr style="background-color: #f2f2f2; text-align: center;">
+                        <th style="border: 1px solid #000; padding: 6px; width: 6%;">ক্রমিক</th>
+                        <th style="border: 1px solid #000; padding: 6px; width: 34%;">পদবি / ব্রাশ নং / নাম ও বিপি</th>
+                        <th style="border: 1px solid #000; padding: 6px; width: 18%;">ইউনিটের নাম</th>
+                        <th style="border: 1px solid #000; padding: 6px; width: 18%;">ইমেইল</th>
+                        <th style="border: 1px solid #000; padding: 6px; width: 14%;">মোবাইল নম্বর</th>
+                        <th style="border: 1px solid #000; padding: 6px; width: 10%;">মন্তব্য</th>
                     </tr>
                 </thead>
                 <tbody id="printTableBody">
-                    <!-- Dynamic Printable Data -->
+                    <!-- Dynamic Printable Rows -->
                 </tbody>
             </table>
 
-            <p class="font-semibold text-xs my-4">
+            <p style="margin-top: 15px; text-align: justify;">
                 উল্লেখ যে, NGPIMS যাচাইপূর্বক অত্র ইউনিটে কর্মরত অন্য কোন পুলিশ সদস্যদের NGPIMS এ মোবাইল নম্বর ও ই-মেইল সমস্যা নেই।
             </p>
 
-            <!-- Signature Section Right Side -->
-            <div class="mt-16 flex justify-end">
-                <div class="text-left w-64">
-                    <p class="border-t border-black pt-1">স্বাক্ষরঃ</p>
-                    <p class="font-bold">নামঃ <span id="printSignName"></span></p>
-                    <p>বিপিঃ <span id="printSignBp"></span></p>
-                    <p>পদঃ <span id="printSignRank"></span></p>
-                    <p>ইউনিটের নামঃ <span id="printSignUnit"></span></p>
-                </div>
+            <!-- Signature Area -->
+            <div style="margin-top: 60px; float: right; text-align: center; width: 250px;">
+                <p id="printSignName" style="font-weight: bold;"></p>
+                <p id="printSignBP"></p>
+                <p id="printSignDesig"></p>
+                <p id="printSignUnit"></p>
             </div>
+            <div style="clear: both;"></div>
 
-            <!-- Print Footer Date & Time + Dev Info -->
-            <div class="mt-12 flex justify-between items-center text-[10px] text-gray-700 border-t border-gray-400 pt-2 font-sans">
-                <p>প্রিন্টের তারিখ ও সময়: <span id="printDateTime"></span></p>
-                <p class="font-bold">Dev. by T261</p>
+            <!-- Print Footer Info -->
+            <div style="margin-top: 40px; font-size: 10px; color: #444; border-t: 1px solid #ccc; padding-top: 4px;">
+                <span>প্রিন্টের তারিখ ও সময়: <span id="printDateTime"></span></span> | 
+                <span>Dev. by T261</span>
             </div>
         </div>
     </div>
 
-    <!-- Edit Record Modal (Admin/Developer) -->
-    <div id="editModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">ডাটা সংশোধন করুন</h3>
-            <form id="editForm" onsubmit="handleEditSubmit(event)" class="space-y-3">
-                <input type="hidden" id="editIndex">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">বিপি নম্বর</label>
-                    <input type="text" id="editBp" readonly class="w-full px-3 py-1.5 border rounded bg-gray-100 text-sm font-mono">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">নাম</label>
-                    <input type="text" id="editName" required class="w-full px-3 py-1.5 border rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">পদবি</label>
-                    <select id="editRank" required class="w-full px-3 py-1.5 border rounded text-sm bg-gray-50"></select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">ব্রাশ নং</label>
-                    <input type="text" id="editBrushNo" class="w-full px-3 py-1.5 border rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">নতুন মোবাইল নম্বর</label>
-                    <input type="tel" id="editMobile" maxlength="11" class="w-full px-3 py-1.5 border rounded text-sm font-mono">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">নতুন ই-মেইল</label>
-                    <input type="email" id="editEmail" class="w-full px-3 py-1.5 border rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">মন্তব্য</label>
-                    <textarea id="editRemarks" rows="2" class="w-full px-3 py-1.5 border rounded text-sm"></textarea>
-                </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeEditModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded text-sm font-semibold">বাতিল</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700">আপডেট করুন</button>
-                </div>
-            </form>
+    <!-- FOOTER -->
+    <footer class="bg-gray-900 text-white py-4 mt-8 no-print border-t border-gray-800 text-xs text-center">
+        <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row justify-between items-center gap-2">
+            <p>© 2026 NGPIMS Portal - জেলা পুলিশ, বান্দরবান পার্বত্য জেলা।</p>
+            <p class="text-gray-400">Dev. by T261 | Version 2.0 (Google Sheets Backend)</p>
         </div>
-    </div>
-
-    <!-- Edit User Modal -->
-    <div id="editUserModal" class="fixed inset-0 bg-black/50 z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-xl shadow-2xl max-w-lg w-full p-6">
-            <h3 class="text-lg font-bold text-gray-800 mb-4 pb-2 border-b">ইউজার আইডি সংশোধন</h3>
-            <form id="editUserForm" onsubmit="handleUserEditSubmit(event)" class="space-y-3">
-                <input type="hidden" id="editUserBp">
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">নাম</label>
-                    <input type="text" id="editUserName" required class="w-full px-3 py-1.5 border rounded text-sm">
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">পদ</label>
-                    <select id="editUserRank" required class="w-full px-3 py-1.5 border rounded text-sm">
-                        <option value="অতিরিক্ত পুলিশ সুপার">অতিরিক্ত পুলিশ সুপার</option>
-                        <option value="সহকারি পুলিশ সুপার">সহকারি পুলিশ সুপার</option>
-                        <option value="অফিসার ইনচার্জ">অফিসার ইনচার্জ</option>
-                        <option value="ইনচার্জ">ইনচার্জ</option>
-                        <option value="পিআইএমস অপারেটর">পিআইএমস অপারেটর</option>
-                        <option value="ডেভলপার">ডেভলপার</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-gray-700">পাসওয়ার্ড</label>
-                    <input type="text" id="editUserPassword" required class="w-full px-3 py-1.5 border rounded text-sm">
-                </div>
-                <div class="flex justify-end gap-2 pt-2">
-                    <button type="button" onclick="closeEditUserModal()" class="px-4 py-2 bg-gray-300 text-gray-700 rounded text-sm font-semibold">বাতিল</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded text-sm font-semibold hover:bg-blue-700">আপডেট করুন</button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-slate-900 text-slate-400 text-xs py-4 text-center border-t border-slate-800 mt-auto no-print">
-        <p>© 2026 NGPIMS মোবাইল ও ই-মেইল পরিবর্তন পোর্টাল | বান্দরবান পার্বত্য জেলা | Dev. by T261</p>
     </footer>
 
-    <!-- JAVASCRIPT APPLICATION LOGIC -->
+    <!-- JAVASCRIPT APP LOGIC -->
     <script>
-        /* -------------------------------------------------------------
-           MASTER CONSTANTS
-        ------------------------------------------------------------- */
-        const UNITS = [
-            "সদর থানা", "রুমা থানা", "রোয়াংছড়ি থানা", "নাইক্ষ্যংছড়ি থানা", "আলীকদম থানা", "থানচি থানা", "লামা থানা", 
-            "ঘুমধুম তদন্ত কেন্দ্র", "বাইশারী তদন্ত কেন্দ্র", "টংকাবতি তদন্ত কেন্দ্র", "সদর ফাঁড়ি", "বাইশারী ফাঁড়ি", 
-            "কেয়াজুপাড়া ফাঁড়ি", "গজালিয়া ফাঁড়ি", "সোনাইছড়ি ফাঁড়ি", "ফাইতং ফাঁড়ি", "রাজবিল্লা ফাঁড়ি", "ডিবি", "ডিএসবি", 
-            "সদর কোর্ট", "লামা কোর্ট", "সদর ট্রাফিক", "লামা ট্রাফিক", "আলীকদম ট্রাফিক", "নাইক্ষ্যংছড়ি ট্রাফিক", 
-            "পুলিশ সুপারের কার্যালয়", "পুলিশ লাইন", "এমটি", "পুলিশ কন্ট্রোল রুম", "ডিপার্টমেন্টাল স্টোর", "অস্ত্রাগার", 
-            "রেশন স্টোর", "ব্যান্ড গ্রুপ", "রিজার্ভ অফিস", "সদর সার্কেল অফিস", "লামা সার্কেল অফিস", "রুমা সার্কেল অফিস", 
-            "আরআই অফিস", "মেজর অফিস", "চিম্বুক ক্যাম্প", "মেঘলা ক্যাম্প", "মিলনছড়ি ক্যাম্প", "হানসামপাড়া ক্যাম্প", 
-            "বেতছড়া ক্যাম্প", "তারাছামূখ ক্যাম্প", "তালুকদারপাড়া ক্যাম্প", "মুরংবাজার ক্যাম্প", "কৈক্ষ্যংঝিরি ক্যাম্প", 
-            "কুমারী ক্যাম্প", "আজিজনগর ক্যাম্প", "আলীক্ষ্যং ক্যাম্প", "২৬-কিলো ক্যাম্প", "রেইচা চেকপোষ্ট", "ডুলুপাড়া চেকপোষ্ট", 
+        // ==========================================
+        // GOOGLE APPS SCRIPT BACKEND URL
+        // ==========================================
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIsXuSzMnW7pbevjv0607mdUu9ZxW1oqnkR8nlLRr2GufNLjAvRzc8nqGl3vEI69U8_Q/exec";
+
+        // Dynamic Options
+        const UNITS_LIST = [
+            "সদর থানা", "রুমা থানা", "রোয়াংছড়ি থানা", "নাইক্ষ্যংছড়ি থানা", "আলীকদম থানা", "থানচি থানা", "লামা থানা",
+            "ঘুমধুম তদন্ত কেন্দ্র", "বাইশারী তদন্ত কেন্দ্র", "টংকাবতি তদন্ত কেন্দ্র", "সদর ফাঁড়ি", "বাইশারী ফাঁড়ি",
+            "কেয়াজুপাড়া ফাঁড়ি", "গজালিয়া ফাঁড়ি", "সোনাইছড়ি ফাঁড়ি", "ফাইতং ফাঁড়ি", "রাজবিল্লা ফাঁড়ি", "ডিবি", "ডিএসবি",
+            "সদর কোর্ট", "লামা কোর্ট", "সদর ট্রাফিক", "লামা ট্রাফিক", "আলীকদম ট্রাফিক", "নাইক্ষ্যংছড়ি ট্রাফিক",
+            "পুলিশ সুপারের কার্যালয়", "পুলিশ লাইন", "এমটি", "পুলিশ কন্ট্রোল রুম", "ডিপার্টমেন্টাল স্টোর", "অস্ত্রাগার",
+            "রেশন স্টোর", "ব্যান্ড গ্রুপ", "রিজার্ভ অফিস", "সদর সার্কেল অফিস", "লামা সার্কেল অফিস", "রুমা সার্কেল অফিস",
+            "আরআই অফিস", "মেজর অফিস", "চিম্বুক ক্যাম্প", "মেঘলা ক্যাম্প", "মিলনছড়ি ক্যাম্প", "হানসামপাড়া ক্যাম্প",
+            "বেতছড়া ক্যাম্প", "তারাছামূখ ক্যাম্প", "তালুকদারপাড়া ক্যাম্প", "মুরংবাজার ক্যাম্প", "কৈক্ষ্যংঝিরি ক্যাম্প",
+            "কুমারী ক্যাম্প", "আজিজনগর ক্যাম্প", "আলীক্ষ্যং ক্যাম্প", "২৬-কিলো ক্যাম্প", "রেইচা চেকপোষ্ট", "ডুলুপাড়া চেকপোষ্ট",
             "ইয়াংছা চেকপোষ্ট", "রুমা এসবি গার্ড", "রোয়াংছড়ি এসবি গার্ড", "বেতার বেইজ"
         ];
 
-        // Specific Sorting Ranks List as Required
-        const ENTRY_RANKS = [
-            "ইন্সপেক্টর (নিরস্ত্র)", 
-            "ইন্সপেক্টর (সশস্ত্র)", 
-            "ইন্সপেক্টর (টিটি)", 
-            "এসআই (নিরস্ত্র)", 
-            "এসআই (সশস্ত্র)", 
-            "টিএসআই", 
-            "সার্জেন্ট", 
-            "এএসআই (নিরস্ত্র)", 
-            "এএসআই (সশস্ত্র)", 
-            "এটিএসআই", 
-            "নায়েক", 
-            "কনস্টেবল"
-        ];
+        const DESIG_RANK_ORDER = {
+            "ইন্সপেক্টর (নিরস্ত্র)": 1,
+            "ইন্সপেক্টর (সশস্ত্র)": 2,
+            "ইন্সপেক্টর (টিটি)": 3,
+            "এসআই (নিরস্ত্র)": 4,
+            "এসআই (সশস্ত্র)": 5,
+            "টিএসআই": 6,
+            "সার্জেন্ট": 7,
+            "এএসআই (নিরস্ত্র)": 8,
+            "এএসআই (সশস্ত্র)": 9,
+            "এটিএসআই": 10,
+            "নায়েক": 11,
+            "কনস্টেবল": 12
+        };
 
-        // Default Pre-configured Admin & Developer Accounts
-        const INITIAL_USERS = [
-            { bp: "BP9818205255", password: "t12345", role: "admin", name: "রাসেল চৌধুরী", designation: "পিআইএমস অপারেটর", unit: "রিজার্ভ অফিস", status: "enabled" },
-            { bp: "BP9920229921", password: "t12345", role: "developer", name: "মোঃ তৌহিদুল ইসলাম", designation: "ডেভলপার", unit: "পুলিশ সুপারের কার্যালয়", status: "enabled" }
-        ];
+        // Application State
+        let currentUser = null;
+        let allUsersData = [];
+        let allManpowerData = [];
+        let recycleBinData = [];
+        let systemLogsData = [];
+        let sortDirection = {};
 
-        /* -------------------------------------------------------------
-           STATE & LOCAL STORAGE SYNCHRONIZATION
-        ------------------------------------------------------------- */
-        let users = JSON.parse(localStorage.getItem('ngpims_v2_users')) || INITIAL_USERS;
-        let allDatabase = JSON.parse(localStorage.getItem('ngpims_v2_data')) || [];
-        let systemLogs = JSON.parse(localStorage.getItem('ngpims_v2_logs')) || [];
-        let currentUser = JSON.parse(localStorage.getItem('ngpims_v2_current_user')) || null;
-        let currentSort = { column: null, direction: 'asc' };
-
-        function saveState() {
-            localStorage.setItem('ngpims_v2_users', JSON.stringify(users));
-            localStorage.setItem('ngpims_v2_data', JSON.stringify(allDatabase));
-            localStorage.setItem('ngpims_v2_logs', JSON.stringify(systemLogs));
-            if(currentUser) {
-                localStorage.setItem('ngpims_v2_current_user', JSON.stringify(currentUser));
-            } else {
-                localStorage.removeItem('ngpims_v2_current_user');
-            }
-        }
-
-        // Logger Function for Developer Audit
-        function logActivity(activityDetails) {
-            if (!currentUser) return;
-            const logEntry = {
-                timestamp: new Date().toLocaleString('bn-BD'),
-                isoTime: new Date().toISOString(),
-                userBp: currentUser.bp,
-                userName: currentUser.name,
-                userRank: currentUser.designation || '-',
-                userUnit: currentUser.unit || '-',
-                details: activityDetails
-            };
-            systemLogs.unshift(logEntry);
-            saveState();
-        }
-
-        /* -------------------------------------------------------------
-           INITIALIZATION & DOM LOADING
-        ------------------------------------------------------------- */
-        document.addEventListener('DOMContentLoaded', () => {
-            populateSelectOptions();
-            
-            if (currentUser) {
-                setupLoggedInView();
-            } else {
-                showAuthSection();
+        // DOM Ready Initialization
+        document.addEventListener("DOMContentLoaded", () => {
+            populateUnitsDropdown();
+            // Check session
+            const savedUser = localStorage.getItem("ngpims_user");
+            if (savedUser) {
+                currentUser = JSON.parse(savedUser);
+                showDashboard();
             }
         });
 
-        function populateSelectOptions() {
-            const regUnit = document.getElementById('regUnit');
-            regUnit.innerHTML = '<option value="">-- ইউনিট নির্বাচন করুন --</option>';
-            UNITS.forEach(u => {
-                regUnit.innerHTML += `<option value="${u}">${u}</option>`;
-            });
-
-            const entryRank = document.getElementById('entryRank');
-            const editRank = document.getElementById('editRank');
-            let rankOpts = '<option value="">-- পদবি নির্বাচন করুন --</option>';
-            ENTRY_RANKS.forEach(r => {
-                rankOpts += `<option value="${r}">${r}</option>`;
-            });
-            entryRank.innerHTML = rankOpts;
-            editRank.innerHTML = rankOpts;
+        // Switch between Login and Registration views
+        function switchAuthView(viewName) {
+            const loginCard = document.getElementById("loginViewCard");
+            const regCard = document.getElementById("registerViewCard");
+            if (viewName === 'register') {
+                loginCard.classList.add("hidden");
+                regCard.classList.remove("hidden");
+            } else {
+                regCard.classList.add("hidden");
+                loginCard.classList.remove("hidden");
+            }
         }
 
-        /* -------------------------------------------------------------
-           UI UTILITIES (Modals, Loaders, Formatters)
-        ------------------------------------------------------------- */
-        function showLoading(msg = "প্রসেসিং করা হচ্ছে...") {
-            document.getElementById('loadingText').innerText = msg;
-            document.getElementById('loadingOverlay').classList.remove('hidden');
-        }
-
-        function hideLoading() {
-            document.getElementById('loadingOverlay').classList.add('hidden');
-        }
-
-        function showModal(title, bodyHtml, headerBg = "bg-blue-600") {
-            const modal = document.getElementById('customModal');
-            const header = document.getElementById('modalHeader');
-            document.getElementById('modalTitle').innerText = title;
-            document.getElementById('modalBody').innerHTML = bodyHtml;
-            header.className = `px-6 py-4 text-white flex justify-between items-center ${headerBg}`;
+        // Populate Dropdowns
+        function populateUnitsDropdown() {
+            const regUnit = document.getElementById("regUnit");
+            const filterUnit = document.getElementById("filterUnitSelect");
             
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                document.getElementById('modalContent').classList.remove('scale-95', 'opacity-0');
-                document.getElementById('modalContent').classList.add('scale-100', 'opacity-100');
-            }, 10);
+            UNITS_LIST.forEach(unit => {
+                const opt1 = document.createElement("option");
+                opt1.value = unit;
+                opt1.textContent = unit;
+                regUnit.appendChild(opt1);
+
+                const opt2 = document.createElement("option");
+                opt2.value = unit;
+                opt2.textContent = unit;
+                filterUnit.appendChild(opt2);
+            });
         }
 
+        // Show/Hide Loading Spinner
+        function showLoading(msg = "তথ্য সেভ/লোড হচ্ছে...") {
+            document.getElementById("loadingText").innerText = msg;
+            document.getElementById("loadingOverlay").classList.remove("hidden");
+        }
+        function hideLoading() {
+            document.getElementById("loadingOverlay").classList.add("hidden");
+        }
+
+        // Modal Helpers
+        function showModal(title, body) {
+            document.getElementById("modalTitle").innerText = title;
+            document.getElementById("modalBody").innerText = body;
+            document.getElementById("customModal").classList.remove("hidden");
+        }
         function closeModal() {
-            const content = document.getElementById('modalContent');
-            content.classList.remove('scale-100', 'opacity-100');
-            content.classList.add('scale-95', 'opacity-0');
-            setTimeout(() => {
-                document.getElementById('customModal').classList.add('hidden');
-            }, 200);
+            document.getElementById("customModal").classList.add("hidden");
         }
 
-        function formatBPInput(input) {
-            let val = input.value.toUpperCase();
-            if (!val.startsWith('BP') && val.length > 0) {
-                val = 'BP' + val.replace(/[^0-9]/g, '');
-            } else if (val.startsWith('BP')) {
-                val = 'BP' + val.substring(2).replace(/[^0-9]/g, '');
+        // API Call Helper
+        async function apiPost(data) {
+            showLoading();
+            try {
+                const response = await fetch(GOOGLE_SCRIPT_URL, {
+                    method: "POST",
+                    headers: { "Content-Type": "text/plain;charset=utf-8" },
+                    body: JSON.stringify(data)
+                });
+                const resData = await response.json();
+                hideLoading();
+                return resData;
+            } catch (err) {
+                hideLoading();
+                showModal("ত্রুটি", "সার্ভারের সাথে যোগাযোগ করা সম্ভব হয়নি: " + err.message);
+                return { success: false };
             }
-            input.value = val.substring(0, 12);
         }
 
-        /* -------------------------------------------------------------
-           AUTHENTICATION LOGIC
-        ------------------------------------------------------------- */
-        function toggleAuthForm(type) {
-            const loginForm = document.getElementById('loginFormContainer');
-            const regForm = document.getElementById('regFormContainer');
-            const loginBtn = document.getElementById('showLoginBtn');
-            const regBtn = document.getElementById('showRegBtn');
+        // Handle Registration
+        async function handleRegistration(e) {
+            e.preventDefault();
+            const unit = document.getElementById("regUnit").value;
+            const designation = document.getElementById("regDesignation").value;
+            const bp = document.getElementById("regBP").value.trim();
+            const name = document.getElementById("regName").value.trim();
+            const password = document.getElementById("regPassword").value.trim();
 
-            if(type === 'login') {
-                loginForm.classList.remove('hidden');
-                regForm.classList.add('hidden');
-                loginBtn.className = "flex-1 py-3 text-center rounded-xl font-bold transition text-blue-600 bg-blue-50 border border-blue-200 shadow-sm";
-                regBtn.className = "flex-1 py-3 text-center rounded-xl font-bold transition text-gray-500 hover:bg-gray-50";
+            if (!/^BP\d{10}$/.test(bp)) {
+                showModal("রেজিস্ট্রেশন ত্রুটি", "বিপি নম্বর অবশ্যই BP সহ ১২ ডিজিট হতে হবে (যেমন: BP9920229900)!");
+                return;
+            }
+
+            const res = await apiPost({ action: "register", unit, designation, bp, name, password });
+            if (res.success) {
+                showModal("রেজিস্ট্রেশন সফল", res.message);
+                document.getElementById("registrationForm").reset();
+                switchAuthView('login'); // Return to login after successful registration
             } else {
-                loginForm.classList.add('hidden');
-                regForm.classList.remove('hidden');
-                regBtn.className = "flex-1 py-3 text-center rounded-xl font-bold transition text-blue-600 bg-blue-50 border border-blue-200 shadow-sm";
-                loginBtn.className = "flex-1 py-3 text-center rounded-xl font-bold transition text-gray-500 hover:bg-gray-50";
+                showModal("রেজিস্ট্রেশন ব্যর্থ", res.message);
             }
         }
 
-        function handleRegistration(e) {
+        // Handle Login
+        async function handleLogin(e) {
             e.preventDefault();
-            const unit = document.getElementById('regUnit').value;
-            const bp = document.getElementById('regBp').value;
-            const name = document.getElementById('regName').value;
-            const designation = document.getElementById('regDesignation').value;
-            const password = document.getElementById('regPassword').value;
+            const bp = document.getElementById("loginBP").value.trim();
+            const password = document.getElementById("loginPassword").value.trim();
 
-            if (bp.length !== 12 || !bp.startsWith('BP')) {
-                showModal('ভুল বিপি নম্বর', '<p class="text-red-600 font-semibold">বিপি নম্বরটি অবশ্যই BP সহ ১২ ডিজিটের হতে হবে (যেমন: BPXXXXXXXXXX)।</p>', 'bg-red-600');
+            if (!/^BP\d{10}$/.test(bp)) {
+                showModal("লগইন ত্রুটি", "বিপি নম্বর সঠিকভাবে লিখুন (BP সহ ১২ ডিজিট)!");
                 return;
             }
 
-            // Registration Rule 2: Single Registration per unit
-            const existingUnitUser = users.find(u => u.unit === unit);
-            if (existingUnitUser) {
-                showModal('রেজিস্ট্রেশন ব্যর্থ', `<p class="text-slate-700"><b>${unit}</b> ইউনিটের জন্য ইতিমধ্যে আইডি রেজিস্ট্রেশন করা হয়েছে (${existingUnitUser.name}, BP: ${existingUnitUser.bp})। একই ইউনিটে একাধিক আইডি রেজিস্ট্রেশন করা যাবে না।</p>`, 'bg-red-600');
-                return;
+            const res = await apiPost({ action: "login", bp, password });
+            if (res.success) {
+                currentUser = { ...res.user, role: res.role };
+                localStorage.setItem("ngpims_user", JSON.stringify(currentUser));
+                document.getElementById("loginForm").reset();
+                showDashboard();
+            } else {
+                showModal("লগইন ব্যর্থ", res.message);
             }
-
-            // Duplicate BP check in users
-            const existingBpUser = users.find(u => u.bp === bp);
-            if (existingBpUser) {
-                showModal('রেজিস্ট্রেশন ব্যর্থ', `<p class="text-slate-700">এই বিপি (<b>${bp}</b>) নম্বর দিয়ে ইতিমধ্যে আইডি তৈরি করা রয়েছে।</p>`, 'bg-red-600');
-                return;
-            }
-
-            showLoading("আকাউন্ট তৈরি করা হচ্ছে...");
-            setTimeout(() => {
-                const newUser = {
-                    bp,
-                    password,
-                    role: "user",
-                    name,
-                    unit,
-                    designation,
-                    status: "enabled"
-                };
-
-                users.push(newUser);
-                saveState();
-                hideLoading();
-
-                showModal('রেজিস্ট্রেশন সফল', '<p class="text-emerald-700 font-semibold">আপনার ইউনিট আইডি সফলভাবে রেজিস্ট্রেশন হয়েছে। এখন বিপি ও পাসওয়ার্ড দিয়ে লগইন করুন।</p>', 'bg-emerald-600');
-                document.getElementById('regForm').reset();
-                toggleAuthForm('login');
-                document.getElementById('loginBp').value = bp;
-            }, 500);
         }
 
-        function handleLogin(e) {
-            e.preventDefault();
-            const bp = document.getElementById('loginBp').value;
-            const password = document.getElementById('loginPassword').value;
-
-            const user = users.find(u => u.bp === bp && u.password === password);
-
-            if (!user) {
-                showModal('লগইন ব্যর্থ', '<p class="text-red-600 font-semibold">ভুল বিপি নম্বর অথবা পাসওয়ার্ড প্রদান করা হয়েছে।</p>', 'bg-red-600');
-                return;
-            }
-
-            if (user.status === 'disabled') {
-                showModal('অ্যাকাউন্ট নিষ্ক্রিয়', '<p class="text-amber-700 font-semibold">আপনার আইডিটি নিষ্ক্রিয় করা হয়েছে। অ্যাডমিনের সাথে যোগাযোগ করুন।</p>', 'bg-amber-600');
-                return;
-            }
-
-            showLoading("লগইন করা হচ্ছে...");
-            setTimeout(() => {
-                currentUser = user;
-                saveState();
-                logActivity(`সিস্টেমে সফলভাবে লগইন করেছেন`);
-                hideLoading();
-                setupLoggedInView();
-            }, 400);
-        }
-
-        function handleLogout() {
-            if(currentUser) {
-                logActivity(`সিস্টেম থেকে লগআউট করেছেন`);
-            }
+        // Logout
+        function logout() {
+            localStorage.removeItem("ngpims_user");
             currentUser = null;
-            saveState();
-            showAuthSection();
+            document.getElementById("authSection").classList.remove("hidden");
+            document.getElementById("dashboardSection").classList.add("hidden");
+            document.getElementById("userInfoHeader").classList.add("hidden");
+            switchAuthView('login');
         }
 
-        function showAuthSection() {
-            document.getElementById('authSection').classList.remove('hidden');
-            document.getElementById('dashboardSection').classList.add('hidden');
-            document.getElementById('userNav').classList.add('hidden');
+        // Show Dashboard and Setup Tabs Navigation
+        async function showDashboard() {
+            document.getElementById("authSection").classList.add("hidden");
+            document.getElementById("dashboardSection").classList.remove("hidden");
+            document.getElementById("userInfoHeader").classList.remove("hidden");
+
+            document.getElementById("navUserName").innerText = currentUser.name;
+            document.getElementById("navUserRole").innerText = `${currentUser.designation} (${currentUser.unit})`;
+
+            setupTabs();
+            await fetchAllData();
         }
 
-        function setupLoggedInView() {
-            document.getElementById('authSection').classList.add('hidden');
-            document.getElementById('dashboardSection').classList.remove('hidden');
-            document.getElementById('userNav').classList.remove('hidden');
-            document.getElementById('userNav').classList.add('flex');
+        // Setup Tabs (With Horizontal Scrolling Support)
+        function setupTabs() {
+            const tabsNav = document.getElementById("tabsNav");
+            tabsNav.innerHTML = "";
 
-            document.getElementById('navUserName').innerText = currentUser.name;
-            document.getElementById('navUserUnit').innerText = currentUser.unit;
-            document.getElementById('entryFormUnitBadge').innerText = `ইউনিট: ${currentUser.unit}`;
-
-            const adminTabs = document.getElementById('adminTabs');
-            const logsBtn = document.getElementById('tabLogsBtn');
-
-            if (currentUser.role === 'admin' || currentUser.role === 'developer') {
-                adminTabs.classList.remove('hidden');
-                adminTabs.classList.add('flex');
-            } else {
-                adminTabs.classList.add('hidden');
+            let tabs = [];
+            if (currentUser.role === "user") {
+                tabs = [
+                    { id: "tabEntry", label: "ডাটা এন্ট্রি", icon: "fa-pen-to-square" },
+                    { id: "tabManpower", label: "জনবল ডাটা ও ফরওয়ার্ডিং", icon: "fa-users" }
+                ];
+            } else if (currentUser.role === "admin") {
+                tabs = [
+                    { id: "tabAllDatabase", label: "অল ডাটা বেইজ", icon: "fa-database" },
+                    { id: "tabUnitWise", label: "ইউনিট ভিত্তিক ডাটা", icon: "fa-filter" },
+                    { id: "tabStats", label: "পরিসংখ্যান", icon: "fa-chart-pie" },
+                    { id: "tabUsers", label: "ইউজার তালিকা", icon: "fa-user-gear" },
+                    { id: "tabRecycleBin", label: "রিসাইকেল বিন", icon: "fa-trash-can" }
+                ];
+            } else if (currentUser.role === "developer") {
+                tabs = [
+                    { id: "tabAllDatabase", label: "অল ডাটা বেইজ", icon: "fa-database" },
+                    { id: "tabUnitWise", label: "ইউনিট ভিত্তিক ডাটা", icon: "fa-filter" },
+                    { id: "tabStats", label: "পরিসংখ্যান", icon: "fa-chart-pie" },
+                    { id: "tabUsers", label: "ইউজার তালিকা", icon: "fa-user-gear" },
+                    { id: "tabRecycleBin", label: "রিসাইকেল বিন", icon: "fa-trash-can" },
+                    { id: "tabLogs", label: "সিস্টেম লগস", icon: "fa-list-check" }
+                ];
             }
 
-            if (currentUser.role === 'developer') {
-                logsBtn.classList.remove('hidden');
-                logsBtn.classList.add('flex');
-            } else {
-                logsBtn.classList.add('hidden');
-            }
-
-            switchTab('entry');
-        }
-
-        /* -------------------------------------------------------------
-           NAVIGATION / TAB SWITCHING LOGIC
-        ------------------------------------------------------------- */
-        function switchTab(tabName) {
-            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-
-            const buttons = ['tabEntryBtn', 'tabManpowerBtn', 'tabAllDataBtn', 'tabStatsBtn', 'tabUsersBtn', 'tabLogsBtn'];
-            buttons.forEach(id => {
-                const btn = document.getElementById(id);
-                if (btn) {
-                    btn.className = "px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition text-slate-300 hover:text-white hover:bg-slate-800 flex items-center gap-1.5";
-                }
+            tabs.forEach((tab, index) => {
+                const btn = document.createElement("button");
+                btn.className = `tab-btn px-4 py-2 text-sm font-semibold rounded-lg flex items-center gap-2 transition cursor-pointer whitespace-nowrap ${index === 0 ? 'bg-blue-800 text-white' : 'text-gray-600 hover:bg-gray-100'}`;
+                btn.innerHTML = `<i class="fa-solid ${tab.icon}"></i> ${tab.label}`;
+                btn.onclick = () => switchTab(tab.id, btn);
+                tabsNav.appendChild(btn);
             });
 
-            if (tabName === 'entry') {
-                document.getElementById('entryTab').classList.remove('hidden');
-                document.getElementById('tabEntryBtn').className = "px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-blue-600 text-white shadow flex items-center gap-1.5";
-            } else if (tabName === 'manpower') {
-                document.getElementById('manpowerTab').classList.remove('hidden');
-                document.getElementById('tabManpowerBtn').className = "px-3 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-blue-600 text-white shadow flex items-center gap-1.5";
-                renderManpowerData();
-            } else if (tabName === 'allData') {
-                document.getElementById('allDataTab').classList.remove('hidden');
-                document.getElementById('tabAllDataBtn').className = "px-2.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-blue-600 text-white shadow flex items-center gap-1";
-                renderAllDatabase();
-            } else if (tabName === 'stats') {
-                document.getElementById('statsTab').classList.remove('hidden');
-                document.getElementById('tabStatsBtn').className = "px-2.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-blue-600 text-white shadow flex items-center gap-1";
-                renderStatistics();
-            } else if (tabName === 'users') {
-                document.getElementById('usersTab').classList.remove('hidden');
-                document.getElementById('tabUsersBtn').className = "px-2.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-blue-600 text-white shadow flex items-center gap-1";
+            // Show first tab by default
+            if (tabs.length > 0) {
+                switchTab(tabs[0].id, tabsNav.children[0]);
+            }
+        }
+
+        // Switch Active Tab
+        function switchTab(tabId, clickedBtn) {
+            document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
+            document.querySelectorAll(".tab-btn").forEach(btn => {
+                btn.classList.remove("bg-blue-800", "text-white");
+                btn.classList.add("text-gray-600", "hover:bg-gray-100");
+            });
+
+            document.getElementById(tabId).classList.remove("hidden");
+            clickedBtn.classList.remove("text-gray-600", "hover:bg-gray-100");
+            clickedBtn.classList.add("bg-blue-800", "text-white");
+        }
+
+        // Fetch Data from Apps Script
+        async function fetchAllData() {
+            const res = await apiPost({ action: "fetchAllData" });
+            if (res.success) {
+                allUsersData = res.users || [];
+                allManpowerData = res.allData || [];
+                recycleBinData = res.recycleBin || [];
+                systemLogsData = res.logs || [];
+
+                renderAllViews();
+            }
+        }
+
+        // Render UI Elements
+        function renderAllViews() {
+            if (currentUser.role === "user") {
+                renderUserManpowerTable();
+            } else {
+                renderAllDataTable();
+                renderUnitWiseData();
+                renderStatsTable();
                 renderUsersTable();
-            } else if (tabName === 'logs') {
-                document.getElementById('logsTab').classList.remove('hidden');
-                document.getElementById('tabLogsBtn').className = "px-2.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition bg-amber-500 text-slate-900 font-bold shadow flex items-center gap-1";
-                renderLogsTable();
+                renderRecycleBinTable();
+                if (currentUser.role === "developer") {
+                    renderLogsTable();
+                }
             }
         }
 
-        /* -------------------------------------------------------------
-           DATA ENTRY & VALIDATION LOGIC
-        ------------------------------------------------------------- */
-        function handleDataEntry(e) {
+        // Sort Helper Function for Ranks
+        function sortManpowerList(list) {
+            return list.sort((a, b) => {
+                const rankA = DESIG_RANK_ORDER[a.Designation] || 99;
+                const rankB = DESIG_RANK_ORDER[b.Designation] || 99;
+                return rankA - rankB;
+            });
+        }
+
+        // Handle Data Entry
+        async function handleDataEntry(e) {
             e.preventDefault();
+            const bp = document.getElementById("entryBP").value.trim();
+            const desig = document.getElementById("entryDesignation").value;
+            const brushNo = document.getElementById("entryBrushNo").value.trim();
+            const name = document.getElementById("entryName").value.trim();
+            const mobile = document.getElementById("entryMobile").value.trim();
+            const email = document.getElementById("entryEmail").value.trim();
+            const comments = document.getElementById("entryComments").value.trim();
 
-            const bp = document.getElementById('entryBp').value;
-            const rank = document.getElementById('entryRank').value;
-            const brushNo = document.getElementById('entryBrushNo').value || '-';
-            const name = document.getElementById('entryName').value;
-            const mobile = document.getElementById('entryMobile').value.trim();
-            const email = document.getElementById('entryEmail').value.trim();
-            const remarks = document.getElementById('entryRemarks').value || '-';
-
-            // Validate BP Format
-            if (bp.length !== 12 || !bp.startsWith('BP')) {
-                showModal('ভুল বিপি নম্বর', '<p class="text-red-600 font-semibold">বিপি নম্বরটি অবশ্যই BP সহ ১২ ডিজিটের হতে হবে (যেমন: BPXXXXXXXXXX)।</p>', 'bg-red-600');
+            if (!/^BP\d{10}$/.test(bp)) {
+                showModal("ডাটা এন্ট্রি ভুল", "বিপি নম্বর অবশ্যই BP সহ ১২ ডিজিট হতে হবে!");
                 return;
             }
-
-            // Validation Rule: At least ONE of Mobile OR Email required
             if (!mobile && !email) {
-                showModal('তথ্য অসম্পূর্ণ', '<p class="text-amber-700 font-semibold">নতুন মোবাইল নম্বর অথবা নতুন ই-মেইল এর মধ্যে যে কোনো একটি অবশ্যই প্রদান করতে হবে।</p>', 'bg-amber-600');
+                showModal("ডাটা এন্ট্রি ভুল", "নতুন মোবাইল নম্বর ও নতুন ই-মেইল এর মধ্যে যে কোন একটি অবশ্যই পূরণ করতে হবে!");
+                return;
+            }
+            if (mobile && !/^\d{11}$/.test(mobile)) {
+                showModal("ডাটা এন্ট্রি ভুল", "নতুন মোবাইল নম্বর অবশ্যই ১১ ডিজিট হতে হবে!");
                 return;
             }
 
-            // Mobile length check if provided
-            if (mobile && mobile.length !== 11) {
-                showModal('ভুল মোবাইল নম্বর', '<p class="text-red-600 font-semibold">নতুন মোবাইল নম্বর অবশ্যই ১১ ডিজিটের হতে হবে।</p>', 'bg-red-600');
+            const payload = {
+                action: "saveData",
+                bp, designation: desig, brushNo, name,
+                unit: currentUser.unit, mobile, email, comments,
+                enteredByBP: currentUser.bp, enteredByName: currentUser.name
+            };
+
+            const res = await apiPost(payload);
+            if (res.success) {
+                showModal("সফল", res.message);
+                document.getElementById("dataEntryForm").reset();
+                await fetchAllData();
+            } else {
+                showModal(res.isDuplicate ? "ডুপ্লিকেট ডাটা!" : "ত্রুটি", res.message);
+            }
+        }
+
+        // Render User Manpower Data & Print Setup
+        function renderUserManpowerTable() {
+            const tbody = document.getElementById("userManpowerTableBody");
+            const printTbody = document.getElementById("printTableBody");
+            tbody.innerHTML = "";
+            printTbody.innerHTML = "";
+
+            let userItems = allManpowerData.filter(d => d.Unit === currentUser.unit);
+            userItems = sortManpowerList(userItems);
+
+            // Print Header Setup
+            document.getElementById("printUnitName").innerText = currentUser.unit;
+            document.getElementById("printSignName").innerText = currentUser.name;
+            document.getElementById("printSignBP").innerText = `বিপি- ${currentUser.bp}`;
+            document.getElementById("printSignDesig").innerText = currentUser.designation;
+            document.getElementById("printSignUnit").innerText = `${currentUser.unit}, বান্দরবান।`;
+            document.getElementById("printDateTime").innerText = new Date().toLocaleString('bn-BD');
+
+            if (userItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500">কোন ডাটা পাওয়া যায়নি</td></tr>`;
+                printTbody.innerHTML = `<tr><td colspan="6" style="border:1px solid #000; padding:15px; text-align:center;">কোন ডাটা এন্ট্রি করা হয়নি</td></tr>`;
                 return;
             }
 
-            // Duplicate Check in All Database
-            const existingEntry = allDatabase.find(item => item.bp === bp);
-            if (existingEntry) {
-                // Duplicate popup showing Rank, Name & Unit as requested
-                showModal('দ্বিতীয় বার সেভ করা সম্ভব নয়', `
-                    <div class="space-y-3 text-slate-700">
-                        <p class="text-red-600 font-bold"><i class="fa-solid fa-circle-exclamation mr-1"></i> বিপি (<b>${bp}</b>) এর তথ্য পূর্বে ডাটাবেজে এন্ট্রি করা রয়েছে!</p>
-                        <div class="bg-slate-50 p-3 rounded-lg border border-slate-200 text-sm space-y-1">
-                            <p><b>পদবি:</b> ${existingEntry.rank}</p>
-                            <p><b>নাম:</b> ${existingEntry.name}</p>
-                            <p><b>ইউনিট:</b> ${existingEntry.unit}</p>
-                        </div>
-                    </div>
-                `, 'bg-amber-600');
-                return;
-            }
-
-            showLoading("ডাটা সেভ করা হচ্ছে...");
-
-            setTimeout(() => {
-                const newData = {
-                    bp,
-                    rank,
-                    brushNo,
-                    name,
-                    mobile: mobile || '-',
-                    email: email || '-',
-                    remarks,
-                    unit: currentUser.unit, // Auto save unit name
-                    entryByBp: currentUser.bp,
-                    timestamp: new Date().toISOString()
-                };
-
-                allDatabase.push(newData);
-                saveState();
-                logActivity(`নতুন ডাটা এন্ট্রি করেছেন (BP: ${bp}, নাম: ${name})`);
-                hideLoading();
-
-                showModal('ডাটা সেভ সফল', `<p class="text-emerald-700 font-semibold">বিপি: <b>${bp}</b> (${name}) এর তথ্য সফলভাবে সেভ হয়েছে।</p>`, 'bg-emerald-600');
-                document.getElementById('dataEntryForm').reset();
-            }, 400);
-        }
-
-        /* -------------------------------------------------------------
-           MANPOWER DATA & MANDATORY RANK SORTING LOGIC
-        ------------------------------------------------------------- */
-        function getRankOrderIndex(rankName) {
-            const index = ENTRY_RANKS.indexOf(rankName);
-            return index === -1 ? 999 : index;
-        }
-
-        function getUnitDataSorted() {
-            const filtered = allDatabase.filter(item => item.unit === currentUser.unit);
-
-            // Mandatory rank order sorting:
-            // ইন্সপেক্টর (নিরস্ত্র) -> ইন্সপেক্টর (সশস্ত্র) -> ইন্সপেক্টর (টিটি) -> এসআই (নিরস্ত্র) -> এসআই (সশস্ত্র) -> টিএসআই -> সার্জেন্ট -> এএসআই (নিরস্ত্র) -> এএসআই (সশস্ত্র) -> এটিএসআই -> নায়েক -> কনস্টেবল
-            filtered.sort((a, b) => getRankOrderIndex(a.rank) - getRankOrderIndex(b.rank));
-            return filtered;
-        }
-
-        function renderManpowerData() {
-            const listContainer = document.getElementById('unitDataList');
-            const dataList = getUnitDataSorted();
-
-            if (dataList.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="text-center py-12 text-gray-500">
-                        <i class="fa-solid fa-folder-open text-4xl mb-3 text-gray-400"></i>
-                        <p class="font-semibold">আপনার ইউনিট (${currentUser.unit}) হতে এখনো কোনো ডাটা এন্ট্রি করা হয়নি।</p>
-                    </div>
+            userItems.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3">${index + 1}</td>
+                        <td class="p-3 font-semibold">${item.BP}</td>
+                        <td class="p-3">${item.Designation}</td>
+                        <td class="p-3">${item.BrushNo || '-'}</td>
+                        <td class="p-3">${item.Name}</td>
+                        <td class="p-3">${item.Unit}</td>
+                        <td class="p-3">${item.NewMobile || '-'}</td>
+                        <td class="p-3">${item.NewEmail || '-'}</td>
+                        <td class="p-3">${item.Comments || '-'}</td>
+                    </tr>
                 `;
-                return;
-            }
 
-            let html = `
-                <table class="w-full text-left border-collapse text-xs sm:text-sm">
-                    <thead>
-                        <tr class="bg-slate-100 text-slate-700 border-b font-semibold">
-                            <th class="p-3 w-12 text-center">ক্রম</th>
-                            <th class="p-3">বিপি</th>
-                            <th class="p-3">পদবি</th>
-                            <th class="p-3">ব্রাশ নং</th>
-                            <th class="p-3">নাম</th>
-                            <th class="p-3">ইউনিট</th>
-                            <th class="p-3">নতুন মোবাইল নম্বর</th>
-                            <th class="p-3">নতুন ই-মেইল</th>
-                            <th class="p-3">মন্তব্য</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-            `;
-
-            dataList.forEach((item, idx) => {
-                html += `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-3 text-center font-bold text-slate-500">${idx + 1}</td>
-                        <td class="p-3 font-mono font-bold text-slate-800">${item.bp}</td>
-                        <td class="p-3 font-semibold">${item.rank}</td>
-                        <td class="p-3 text-slate-600">${item.brushNo || '-'}</td>
-                        <td class="p-3 font-semibold text-slate-800">${item.name}</td>
-                        <td class="p-3 text-blue-700 font-medium">${item.unit}</td>
-                        <td class="p-3 font-mono">${item.mobile}</td>
-                        <td class="p-3 font-mono text-blue-600">${item.email}</td>
-                        <td class="p-3 text-slate-500">${item.remarks}</td>
+                // Printable Forwarding Row Format
+                const brushText = item.BrushNo ? ` / ${item.BrushNo}` : '';
+                printTbody.innerHTML += `
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">${index + 1}</td>
+                        <td style="border:1px solid #000; padding:6px;">
+                            ${item.Designation}${brushText} ${item.Name}<br>
+                            ${item.BP}
+                        </td>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">${item.Unit}</td>
+                        <td style="border:1px solid #000; padding:6px;">${item.NewEmail || '-'}</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">${item.NewMobile || '-'}</td>
+                        <td style="border:1px solid #000; padding:6px;">${item.Comments || '-'}</td>
                     </tr>
                 `;
             });
-
-            html += `</tbody></table>`;
-            listContainer.innerHTML = html;
         }
 
-        /* -------------------------------------------------------------
-           OFFICIAL PRINT FORWARDING LETTER GENERATOR
-        ------------------------------------------------------------- */
-        function printForwardingLetter() {
-            const dataList = getUnitDataSorted();
+        // Render Admin All Data Table
+        function renderAllDataTable() {
+            const tbody = document.getElementById("allDataTableBody");
+            tbody.innerHTML = "";
 
-            // Set content in printable elements
-            document.getElementById('printUnitName').innerText = currentUser.unit;
-            document.getElementById('printSignName').innerText = currentUser.name;
-            document.getElementById('printSignBp').innerText = currentUser.bp;
-            document.getElementById('printSignRank').innerText = currentUser.designation || 'ইনচার্জ';
-            document.getElementById('printSignUnit').innerText = currentUser.unit;
-
-            const now = new Date();
-            const dateStr = now.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' });
-            const timeStr = now.toLocaleTimeString('bn-BD', { hour: '2-digit', minute: '2-digit' });
-            document.getElementById('printDateTime').innerText = `${dateStr}, ${timeStr}`;
-
-            const tbody = document.getElementById('printTableBody');
-            tbody.innerHTML = '';
-
-            // Render table rows
-            if (dataList.length > 0) {
-                dataList.forEach((item, idx) => {
-                    const brushText = item.brushNo && item.brushNo !== '-' ? `, ব্রাশ নং- ${item.brushNo}` : '';
-                    const row = document.createElement('tr');
-                    row.className = "border-b border-black";
-                    row.innerHTML = `
-                        <td class="border border-black p-1.5 text-center">${idx + 1}</td>
-                        <td class="border border-black p-1.5 text-left">
-                            <b>${item.rank}</b>${brushText}<br>
-                            ${item.name}, বিপি-${item.bp}
-                        </td>
-                        <td class="border border-black p-1.5">${item.unit}</td>
-                        <td class="border border-black p-1.5 font-mono text-[11px]">${item.email}</td>
-                        <td class="border border-black p-1.5 font-mono text-[11px]">${item.mobile}</td>
-                        <td class="border border-black p-1.5">${item.remarks}</td>
-                    `;
-                    tbody.appendChild(row);
-                });
-            }
-
-            // Ensure print container is temporarily unhidden for window.print rendering
-            const printArea = document.getElementById('printArea');
-            printArea.classList.remove('hidden');
-
-            logActivity(`অফিশিয়াল ফরওয়ার্ডিং প্রিন্ট করেছেন (${dataList.length} জন রেকর্ড)`);
-            
-            setTimeout(() => {
-                window.print();
-                printArea.classList.add('hidden');
-            }, 100);
-        }
-
-        /* -------------------------------------------------------------
-           ADMIN ALL DATABASE LOGIC & EXPORTS
-        ------------------------------------------------------------- */
-        function renderAllDatabase(dataToRender = allDatabase) {
-            const tbody = document.getElementById('allDataTableBody');
-            tbody.innerHTML = '';
-
-            if (dataToRender.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" class="text-center py-6 text-gray-500">কোন ডাটা পাওয়া যায়নি।</td></tr>`;
+            if (allManpowerData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-gray-500">কোন ডাটা পাওয়া যায়নি</td></tr>`;
                 return;
             }
 
-            dataToRender.forEach((item, idx) => {
-                const globalIndex = allDatabase.indexOf(item);
-
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition border-b";
-                tr.innerHTML = `
-                    <td class="p-3 font-bold text-slate-500">${idx + 1}</td>
-                    <td class="p-3 font-mono font-bold text-slate-800">${item.bp}</td>
-                    <td class="p-3 font-semibold text-slate-800">${item.name}</td>
-                    <td class="p-3">${item.rank}</td>
-                    <td class="p-3 text-slate-600">${item.brushNo || '-'}</td>
-                    <td class="p-3 text-blue-700 font-medium">${item.unit}</td>
-                    <td class="p-3 font-mono">${item.mobile}</td>
-                    <td class="p-3 font-mono text-xs">${item.email}</td>
-                    <td class="p-3 text-slate-500 text-xs">${item.remarks}</td>
-                    <td class="p-3 text-center space-x-1">
-                        <button onclick="openEditModal(${globalIndex})" class="p-1.5 bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white rounded transition" title="এডিট">
-                            <i class="fa-solid fa-pen-to-square"></i>
-                        </button>
-                        <button onclick="deleteRecord(${globalIndex})" class="p-1.5 bg-red-100 text-red-700 hover:bg-red-600 hover:text-white rounded transition" title="ডিলিট">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
-                    </td>
+            allManpowerData.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3">${index + 1}</td>
+                        <td class="p-3 font-semibold">${item.BP}</td>
+                        <td class="p-3">${item.Designation}</td>
+                        <td class="p-3">${item.BrushNo || '-'}</td>
+                        <td class="p-3">${item.Name}</td>
+                        <td class="p-3">${item.Unit}</td>
+                        <td class="p-3">${item.NewMobile || '-'}</td>
+                        <td class="p-3">${item.NewEmail || '-'}</td>
+                        <td class="p-3">${item.Comments || '-'}</td>
+                        <td class="p-3 text-center space-x-2">
+                            <button onclick="openEditModal('${item.ID}')" class="text-blue-600 hover:text-blue-800"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="confirmDeleteData('${item.ID}')" class="text-red-600 hover:text-red-800"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
-        function filterAllData() {
-            const query = document.getElementById('allDataSearch').value.toLowerCase();
-            const filtered = allDatabase.filter(item => 
-                item.bp.toLowerCase().includes(query) ||
-                item.name.toLowerCase().includes(query) ||
-                item.unit.toLowerCase().includes(query) ||
-                item.rank.toLowerCase().includes(query)
-            );
-            renderAllDatabase(filtered);
-        }
-
-        function sortAllData(column) {
-            if (currentSort.column === column) {
-                currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-            } else {
-                currentSort.column = column;
-                currentSort.direction = 'asc';
-            }
-
-            allDatabase.sort((a, b) => {
-                let valA = a[column] || '';
-                let valB = b[column] || '';
-                if (column === 'rank') {
-                    valA = getRankOrderIndex(a.rank);
-                    valB = getRankOrderIndex(b.rank);
+        // Sort All Data Column
+        function sortAllData(key) {
+            sortDirection[key] = !sortDirection[key];
+            allManpowerData.sort((a, b) => {
+                let valA = a[key] || '';
+                let valB = b[key] || '';
+                if (key === 'index') {
+                    return sortDirection[key] ? 1 : -1;
                 }
-                if (valA < valB) return currentSort.direction === 'asc' ? -1 : 1;
-                if (valA > valB) return currentSort.direction === 'asc' ? 1 : -1;
+                if (valA < valB) return sortDirection[key] ? -1 : 1;
+                if (valA > valB) return sortDirection[key] ? 1 : -1;
                 return 0;
             });
-
-            renderAllDatabase();
+            renderAllDataTable();
         }
 
-        function deleteRecord(index) {
-            const record = allDatabase[index];
-            if (confirm(`আপনি কি নিশ্চিত যে বিপি: ${record.bp} (${record.name}) এর রেকর্ডটি ডিলিট করবেন?`)) {
-                logActivity(`রেকর্ড ডিলিট করেছেন (BP: ${record.bp}, নাম: ${record.name})`);
-                allDatabase.splice(index, 1);
-                saveState();
-                renderAllDatabase();
-                showModal('ডিলিট সফল', '<p class="text-emerald-700 font-semibold">ডাটা সফলভাবে ডিলিট হয়েছে।</p>', 'bg-emerald-600');
-            }
-        }
+        // Render Unit Wise Filter Data
+        function renderUnitWiseData() {
+            const selectedUnit = document.getElementById("filterUnitSelect").value;
+            const tbody = document.getElementById("unitWiseTableBody");
+            tbody.innerHTML = "";
 
-        function openEditModal(index) {
-            const item = allDatabase[index];
-            document.getElementById('editIndex').value = index;
-            document.getElementById('editBp').value = item.bp;
-            document.getElementById('editName').value = item.name;
-            document.getElementById('editRank').value = item.rank;
-            document.getElementById('editBrushNo').value = item.brushNo;
-            document.getElementById('editMobile').value = item.mobile;
-            document.getElementById('editEmail').value = item.email;
-            document.getElementById('editRemarks').value = item.remarks;
+            let list = selectedUnit ? allManpowerData.filter(d => d.Unit === selectedUnit) : allManpowerData;
+            list = sortManpowerList(list);
 
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-
-        function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
-        }
-
-        function handleEditSubmit(e) {
-            e.preventDefault();
-            const index = document.getElementById('editIndex').value;
-            const bp = allDatabase[index].bp;
-            
-            allDatabase[index].name = document.getElementById('editName').value;
-            allDatabase[index].rank = document.getElementById('editRank').value;
-            allDatabase[index].brushNo = document.getElementById('editBrushNo').value || '-';
-            allDatabase[index].mobile = document.getElementById('editMobile').value || '-';
-            allDatabase[index].email = document.getElementById('editEmail').value || '-';
-            allDatabase[index].remarks = document.getElementById('editRemarks').value || '-';
-
-            saveState();
-            logActivity(`রেকর্ড সংশোধন করেছেন (BP: ${bp})`);
-            closeEditModal();
-            renderAllDatabase();
-            showModal('আপডেট সফল', '<p class="text-emerald-700 font-semibold">ডাটা সফলভাবে সংশোধন করা হয়েছে।</p>', 'bg-emerald-600');
-        }
-
-        function exportToExcel() {
-            if (allDatabase.length === 0) {
-                showModal('এক্সপোর্ট ব্যর্থ', '<p class="text-amber-700">ডাউনলোড করার জন্য কোন রেকর্ড নেই।</p>', 'bg-amber-600');
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500">কোন ডাটা পাওয়া যায়নি</td></tr>`;
                 return;
             }
 
-            const excelData = allDatabase.map((item, idx) => ({
-                "ক্রমিক": idx + 1,
-                "বিপি": item.bp,
-                "পদবি": item.rank,
-                "ব্রাশ নং": item.brushNo,
-                "নাম": item.name,
-                "ইউনিটের নাম": item.unit,
-                "নতুন মোবাইল নম্বর": item.mobile,
-                "নতুন ই-মেইল": item.email,
-                "মন্তব্য": item.remarks
-            }));
-
-            const worksheet = XLSX.utils.json_to_sheet(excelData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "NGPIMS_Master_Data");
-            XLSX.writeFile(workbook, `NGPIMS_Mobile_Email_Data_Bandarban.xlsx`);
-            logActivity(`সর্বমোট ডাটাবেজ Excel ফাইল হিসাবে ডাউনলোড করেছেন`);
+            list.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3">${index + 1}</td>
+                        <td class="p-3 font-semibold">${item.BP}</td>
+                        <td class="p-3">${item.Designation}</td>
+                        <td class="p-3">${item.BrushNo || '-'}</td>
+                        <td class="p-3">${item.Name}</td>
+                        <td class="p-3">${item.Unit}</td>
+                        <td class="p-3">${item.NewMobile || '-'}</td>
+                        <td class="p-3">${item.NewEmail || '-'}</td>
+                        <td class="p-3">${item.Comments || '-'}</td>
+                    </tr>
+                `;
+            });
         }
 
-        /* -------------------------------------------------------------
-           STATISTICS LOGIC
-        ------------------------------------------------------------- */
-        function renderStatistics() {
-            const headerEl = document.getElementById('statsTableHeader');
-            const bodyEl = document.getElementById('statsTableBody');
+        // Render Statistics Table
+        function renderStatsTable() {
+            const tbody = document.getElementById("statsTableBody");
+            const tfoot = document.getElementById("statsTableFoot");
+            tbody.innerHTML = "";
+            tfoot.innerHTML = "";
 
-            let headerHtml = `<tr class="bg-slate-200 text-slate-800 border-b"><th class="p-2 text-left border">ইউনিটের নাম</th>`;
-            ENTRY_RANKS.forEach(r => {
-                headerHtml += `<th class="p-2 border font-semibold text-[11px]">${r}</th>`;
-            });
-            headerHtml += `<th class="p-2 border font-bold bg-slate-300">মোট</th></tr>`;
-            headerEl.innerHTML = headerHtml;
-
-            let bodyHtml = '';
+            const desigKeys = Object.keys(DESIG_RANK_ORDER);
+            let totals = {};
+            desigKeys.forEach(k => totals[k] = 0);
             let grandTotal = 0;
-            let rankTotals = new Array(ENTRY_RANKS.length).fill(0);
 
-            UNITS.forEach(unit => {
-                const unitRecords = allDatabase.filter(d => d.unit === unit);
-                if(unitRecords.length === 0) return;
-
+            UNITS_LIST.forEach((unit, idx) => {
+                const unitItems = allManpowerData.filter(d => d.Unit === unit);
                 let rowTotal = 0;
-                let rowCellsHtml = '';
+                let countsHtml = "";
 
-                ENTRY_RANKS.forEach((rank, rIdx) => {
-                    const count = unitRecords.filter(d => d.rank === rank).length;
+                desigKeys.forEach(k => {
+                    const count = unitItems.filter(d => d.Designation === k).length;
+                    countsHtml += `<td class="p-2 border text-center">${count || '-'}</td>`;
+                    totals[k] += count;
                     rowTotal += count;
-                    rankTotals[rIdx] += count;
-                    rowCellsHtml += `<td class="p-2 border ${count > 0 ? 'font-bold text-blue-700 bg-blue-50/50' : 'text-gray-400'}">${count || 0}</td>`;
                 });
 
                 grandTotal += rowTotal;
 
-                bodyHtml += `
-                    <tr class="hover:bg-slate-50">
-                        <td class="p-2 border text-left font-semibold text-slate-800">${unit}</td>
-                        ${rowCellsHtml}
-                        <td class="p-2 border font-bold bg-slate-100 text-slate-900">${rowTotal}</td>
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-2 border text-center font-semibold">${idx + 1}</td>
+                        <td class="p-2 border text-left font-semibold">${unit}</td>
+                        ${countsHtml}
+                        <td class="p-2 border text-center font-bold bg-blue-50">${rowTotal}</td>
                     </tr>
                 `;
             });
 
-            let footerCellsHtml = '';
-            rankTotals.forEach(tot => {
-                footerCellsHtml += `<td class="p-2 border font-bold text-slate-900">${tot}</td>`;
+            // Footer Totals Row
+            let totalCountsHtml = "";
+            desigKeys.forEach(k => {
+                totalCountsHtml += `<td class="p-2 border text-center font-bold">${totals[k]}</td>`;
             });
 
-            bodyHtml += `
-                <tr class="bg-slate-300 font-bold border-t-2 border-slate-500">
-                    <td class="p-2 border text-left text-slate-900">সর্বমোট জনবল</td>
-                    ${footerCellsHtml}
-                    <td class="p-2 border text-emerald-800 font-extrabold text-sm">${grandTotal}</td>
+            tfoot.innerHTML = `
+                <tr>
+                    <td colspan="2" class="p-2 border text-right font-bold">সর্বমোট:</td>
+                    ${totalCountsHtml}
+                    <td class="p-2 border text-center font-extrabold bg-blue-200 text-blue-900">${grandTotal}</td>
                 </tr>
             `;
-
-            bodyEl.innerHTML = bodyHtml;
         }
 
-        /* -------------------------------------------------------------
-           USER MANAGEMENT LOGIC
-        ------------------------------------------------------------- */
+        // Print Statistics
+        function printStats() {
+            const printContent = document.getElementById("statsPrintArea").innerHTML;
+            const win = window.open('', '', 'height=700,width=900');
+            win.document.write('<html><head><title>পরিসংখ্যান প্রিন্ট</title>');
+            win.document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
+            win.document.write('</head><body class="p-6">');
+            win.document.write('<h2 class="text-xl font-bold text-center mb-4">জেলা পুলিশ, বান্দরবান - NGPIMS ডাটা সংশোধন পরিসংখ্যান</h2>');
+            win.document.write(printContent);
+            win.document.write('</body></html>');
+            win.document.close();
+            win.print();
+        }
+
+        // Render Users Table
         function renderUsersTable() {
-            const tbody = document.getElementById('usersTableBody');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById("usersTableBody");
+            tbody.innerHTML = "";
 
-            users.forEach(u => {
-                const isCurrent = currentUser && currentUser.bp === u.bp;
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition border-b";
-                tr.innerHTML = `
-                    <td class="p-3 font-mono font-bold">${u.bp}</td>
-                    <td class="p-3 font-semibold">${u.name}</td>
-                    <td class="p-3">${u.designation || '-'}</td>
-                    <td class="p-3 text-blue-700 font-medium">${u.unit}</td>
-                    <td class="p-3"><span class="px-2 py-0.5 rounded text-xs font-bold ${u.role === 'admin' ? 'bg-purple-100 text-purple-800' : u.role === 'developer' ? 'bg-amber-100 text-amber-800' : 'bg-gray-100 text-gray-800'}">${u.role}</span></td>
-                    <td class="p-3">
-                        <span class="px-2 py-0.5 rounded text-xs font-bold ${u.status === 'enabled' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}">
-                            ${u.status === 'enabled' ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
-                        </span>
-                    </td>
-                    <td class="p-3 text-center space-x-1">
-                        <button onclick="openEditUserModal('${u.bp}')" class="px-2.5 py-1 bg-blue-100 text-blue-700 hover:bg-blue-600 hover:text-white rounded text-xs font-semibold transition">
-                            <i class="fa-solid fa-pen"></i> এডিট
-                        </button>
-                        ${!isCurrent ? `
-                            <button onclick="toggleUserStatus('${u.bp}')" class="px-2.5 py-1 ${u.status === 'enabled' ? 'bg-amber-100 text-amber-700 hover:bg-amber-600' : 'bg-emerald-100 text-emerald-700 hover:bg-emerald-600'} hover:text-white rounded text-xs font-semibold transition">
-                                ${u.status === 'enabled' ? 'নিষ্ক্রিয় করুন' : 'সক্রিয় করুন'}
+            if (allUsersData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-gray-500">কোন ইউজার আইডি পাওয়া যায়নি</td></tr>`;
+                return;
+            }
+
+            allUsersData.forEach((u, index) => {
+                const isEnabled = u.Status === "enabled";
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50">
+                        <td class="p-3">${index + 1}</td>
+                        <td class="p-3 font-semibold">${u.BP}</td>
+                        <td class="p-3">${u.Unit}</td>
+                        <td class="p-3">${u.Name}</td>
+                        <td class="p-3">${u.Designation}</td>
+                        <td class="p-3">
+                            <span class="px-2 py-1 text-xs rounded-full ${isEnabled ? 'bg-green-100 text-green-800 font-bold' : 'bg-red-100 text-red-800 font-bold'}">
+                                ${isEnabled ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
+                            </span>
+                        </td>
+                        <td class="p-3 text-center">
+                            <button onclick="toggleUserStatus('${u.BP}', '${isEnabled ? 'disabled' : 'enabled'}')" class="px-3 py-1 text-xs font-semibold rounded-lg text-white ${isEnabled ? 'bg-amber-600 hover:bg-amber-700' : 'bg-green-600 hover:bg-green-700'}">
+                                ${isEnabled ? 'Disable' : 'Enable'}
                             </button>
-                        ` : ''}
-                    </td>
+                        </td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
-        function toggleUserStatus(bp) {
-            const u = users.find(user => user.bp === bp);
-            if(u) {
-                u.status = u.status === 'enabled' ? 'disabled' : 'enabled';
-                saveState();
-                logActivity(`ইউজার স্ট্যাটাস পরিবর্তন করেছেন (${u.bp}: ${u.status})`);
-                renderUsersTable();
-                showModal('স্ট্যাটাস পরিবর্তিত', `<p class="text-slate-700">ইউজার ${u.name} (${u.bp}) এর স্ট্যাটাস পরিবর্তিত হয়েছে।</p>`, 'bg-blue-600');
+        // Toggle User Status
+        async function toggleUserStatus(bp, newStatus) {
+            const res = await apiPost({
+                action: "toggleUserStatus",
+                bp, newStatus,
+                actionByBP: currentUser.bp, actionByName: currentUser.name
+            });
+            if (res.success) {
+                showModal("সফল", res.message);
+                await fetchAllData();
             }
         }
 
-        function openEditUserModal(bp) {
-            const u = users.find(user => user.bp === bp);
-            if(u) {
-                document.getElementById('editUserBp').value = u.bp;
-                document.getElementById('editUserName').value = u.name;
-                document.getElementById('editUserRank').value = u.designation || 'ইনচার্জ';
-                document.getElementById('editUserPassword').value = u.password;
-                document.getElementById('editUserModal').classList.remove('hidden');
+        // Render Recycle Bin Table
+        function renderRecycleBinTable() {
+            const tbody = document.getElementById("recycleBinTableBody");
+            tbody.innerHTML = "";
+
+            if (recycleBinData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500">রিসাইকেল বিন সম্পূর্ণ খালি</td></tr>`;
+                return;
+            }
+
+            recycleBinData.forEach(item => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 text-xs">
+                        <td class="p-3 font-semibold">${item.BP}</td>
+                        <td class="p-3">${item.Designation}</td>
+                        <td class="p-3">${item.BrushNo || '-'}</td>
+                        <td class="p-3">${item.Name}</td>
+                        <td class="p-3">${item.Unit}</td>
+                        <td class="p-3">${item.NewMobile || '-'}</td>
+                        <td class="p-3">${item.NewEmail || '-'}</td>
+                        <td class="p-3">${item.DeletedAt || '-'}</td>
+                        <td class="p-3 text-center space-x-1">
+                            <button onclick="restoreRecycleData('${item.ID}')" class="bg-emerald-600 text-white px-2 py-1 rounded hover:bg-emerald-700" title="রিস্টোর করুন">
+                                <i class="fa-solid fa-rotate-left"></i> Restore
+                            </button>
+                            <button onclick="permanentDeleteData('${item.ID}')" class="bg-red-600 text-white px-2 py-1 rounded hover:bg-red-700" title="স্থায়ীভাবে ডিলিট">
+                                <i class="fa-solid fa-trash-can"></i> Delete
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        // Restore Data Action
+        async function restoreRecycleData(id) {
+            if (confirm("আপনি কি এই ডাটাটি রিস্টোর করতে চান?")) {
+                const res = await apiPost({
+                    action: "restoreData", id,
+                    actionByBP: currentUser.bp, actionByName: currentUser.name
+                });
+                if (res.success) {
+                    showModal("সফল", res.message);
+                    await fetchAllData();
+                }
             }
         }
 
-        function closeEditUserModal() {
-            document.getElementById('editUserModal').classList.add('hidden');
+        // Permanent Delete Action
+        async function permanentDeleteData(id) {
+            if (confirm("সতর্কতা! এই ডাটাটি স্থায়ীভাবে মুছে যাবে এবং আর উদ্ধার করা সম্ভব হবে না। আপনি কি নিশ্চিত?")) {
+                const res = await apiPost({
+                    action: "permanentDelete", id,
+                    actionByBP: currentUser.bp, actionByName: currentUser.name
+                });
+                if (res.success) {
+                    showModal("সফল", res.message);
+                    await fetchAllData();
+                }
+            }
         }
 
-        function handleUserEditSubmit(e) {
+        // Move Data to Recycle Bin
+        async function confirmDeleteData(id) {
+            if (confirm("আপনি কি ডাটাটি মুছে রিসাইকেল বিন-এ স্থানান্তর করতে চান?")) {
+                const res = await apiPost({
+                    action: "deleteData", id,
+                    actionByBP: currentUser.bp, actionByName: currentUser.name
+                });
+                if (res.success) {
+                    showModal("সফল", res.message);
+                    await fetchAllData();
+                }
+            }
+        }
+
+        // Open Edit Modal
+        function openEditModal(id) {
+            const item = allManpowerData.find(d => d.ID === id);
+            if (!item) return;
+
+            document.getElementById("editRowId").value = item.ID;
+            document.getElementById("editBP").value = item.BP;
+            document.getElementById("editDesignation").value = item.Designation;
+            document.getElementById("editBrushNo").value = item.BrushNo || '';
+            document.getElementById("editName").value = item.Name;
+            document.getElementById("editMobile").value = item.NewMobile || '';
+            document.getElementById("editEmail").value = item.NewEmail || '';
+            document.getElementById("editComments").value = item.Comments || '';
+
+            document.getElementById("editModal").classList.remove("hidden");
+        }
+        function closeEditModal() {
+            document.getElementById("editModal").classList.add("hidden");
+        }
+
+        // Update Data Handler
+        async function handleUpdateData(e) {
             e.preventDefault();
-            const bp = document.getElementById('editUserBp').value;
-            const u = users.find(user => user.bp === bp);
-            if(u) {
-                u.name = document.getElementById('editUserName').value;
-                u.designation = document.getElementById('editUserRank').value;
-                u.password = document.getElementById('editUserPassword').value;
-                saveState();
-                logActivity(`ইউজার তথ্য এডিট করেছেন (${u.bp})`);
-                closeEditUserModal();
-                renderUsersTable();
-                showModal('ইউজার তথ্য আপডেট', '<p class="text-emerald-700 font-semibold">ইউজার আইডি তথ্য সফলভাবে আপডেট হয়েছে।</p>', 'bg-emerald-600');
+            const id = document.getElementById("editRowId").value;
+            const bp = document.getElementById("editBP").value.trim();
+            const designation = document.getElementById("editDesignation").value;
+            const brushNo = document.getElementById("editBrushNo").value.trim();
+            const name = document.getElementById("editName").value.trim();
+            const mobile = document.getElementById("editMobile").value.trim();
+            const email = document.getElementById("editEmail").value.trim();
+            const comments = document.getElementById("editComments").value.trim();
+
+            const item = allManpowerData.find(d => d.ID === id);
+
+            const res = await apiPost({
+                action: "updateData",
+                id, bp, designation, brushNo, name,
+                unit: item ? item.Unit : currentUser.unit,
+                mobile, email, comments,
+                actionByBP: currentUser.bp, actionByName: currentUser.name
+            });
+
+            if (res.success) {
+                closeEditModal();
+                showModal("সফল", res.message);
+                await fetchAllData();
             }
         }
 
-        /* -------------------------------------------------------------
-           DEVELOPER SYSTEM LOGS EXCLUSIVE LOGIC
-        ------------------------------------------------------------- */
+        // Render Logs Table
         function renderLogsTable() {
-            const tbody = document.getElementById('logsTableBody');
-            tbody.innerHTML = '';
+            const tbody = document.getElementById("logsTableBody");
+            tbody.innerHTML = "";
 
-            if (systemLogs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="text-center py-6 text-gray-500">কোন একটিভিটি লগ পাওয়া যায়নি।</td></tr>`;
+            if (systemLogsData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="p-4 text-center text-gray-500">কোন অ্যাক্টিভিটি লগ পাওয়া যায়নি</td></tr>`;
                 return;
             }
 
-            systemLogs.forEach(log => {
-                const tr = document.createElement('tr');
-                tr.className = "hover:bg-slate-50 transition border-b";
-                tr.innerHTML = `
-                    <td class="p-2.5 font-mono text-slate-500">${log.timestamp}</td>
-                    <td class="p-2.5 font-mono font-bold text-slate-800">${log.userBp}</td>
-                    <td class="p-2.5"><b>${log.userName}</b> (${log.userRank})</td>
-                    <td class="p-2.5 text-blue-700 font-medium">${log.userUnit}</td>
-                    <td class="p-2.5 text-slate-800">${log.details}</td>
+            systemLogsData.slice().reverse().forEach(log => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-gray-50 text-xs">
+                        <td class="p-3 text-gray-500">${log.Timestamp}</td>
+                        <td class="p-3 font-semibold">${log.UserBP}</td>
+                        <td class="p-3">${log.UserName}</td>
+                        <td class="p-3 font-medium text-blue-800">${log.Action}</td>
+                        <td class="p-3">${log.Details}</td>
+                    </tr>
                 `;
-                tbody.appendChild(tr);
             });
         }
 
-        function exportLogsToExcel() {
-            if (systemLogs.length === 0) {
-                showModal('ডাউনলোড ব্যর্থ', '<p class="text-amber-700">ডাউনলোড করার মত কোনো লগ নেই।</p>', 'bg-amber-600');
-                return;
-            }
-
-            const excelData = systemLogs.map((item, idx) => ({
-                "ক্রমিক": idx + 1,
-                "তারিখ ও সময়": item.timestamp,
-                "বিপি": item.userBp,
-                "নাম": item.userName,
-                "পদবি": item.userRank,
-                "ইউনিট": item.userUnit,
-                "একটিভিটি বিষদ": item.details
-            }));
-
-            const worksheet = XLSX.utils.json_to_sheet(excelData);
-            const workbook = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(workbook, worksheet, "System_Logs");
-            XLSX.writeFile(workbook, `NGPIMS_System_Activity_Logs.xlsx`);
+        // Export Table to Excel File
+        function exportToExcel(tableId, filename = 'NGPIMS_Export') {
+            const table = document.getElementById(tableId);
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+            XLSX.writeFile(wb, `${filename}_${new Date().toISOString().slice(0,10)}.xlsx`);
         }
     </script>
 </body>
 </html>
-```
