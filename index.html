@@ -9,6 +9,7 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SheetJS (Excel Export) -->
+    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
@@ -30,27 +31,38 @@
         /* Standard Print Rules for Forwarding Letter */
         @media print {
             body * {
-                visibility: hidden;
+                visibility: hidden !important;
             }
             #printArea, #printArea * {
-                visibility: visible;
+                visibility: visible !important;
             }
             #printArea {
+                display: block !important;
                 position: absolute;
                 left: 0;
                 top: 0;
                 width: 100%;
                 margin: 0;
-                padding: 0;
-                background: #fff;
-                color: #000;
+                padding: 10px;
+                background: #fff !important;
+                color: #000 !important;
+            }
+            /* Ensures footer stays at the bottom of printed page */
+            .print-footer {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                display: flex;
+                justify-content: space-between;
+                font-size: 10px;
+                color: #444;
+                border-top: 1px solid #ccc;
+                padding-top: 4px;
             }
             @page {
                 size: A4 portrait;
-                margin-top: 1in;
-                margin-left: 1in;
-                margin-right: 0.5in;
-                margin-bottom: 0.5in;
+                margin: 10mm;
             }
             .no-print {
                 display: none !important;
@@ -67,7 +79,7 @@
                 <i class="fa-solid fa-shield-halved text-3xl text-yellow-400"></i>
                 <div>
                     <h1 class="text-xl md:text-2xl font-bold leading-tight">NGPIMS মোবাইল ও ই-মেইল পরিবর্তন</h1>
-                    <p class="text-xs text-blue-200">রিজার্ভ অফিস, বান্দরবান পার্বত্য জেলা</p>
+                    <p class="text-xs text-blue-200">রিজার্ভ , বান্দরবান পার্বত্য জেলা</p>
                 </div>
             </div>
             <div id="userInfoHeader" class="hidden flex items-center space-x-4">
@@ -132,10 +144,9 @@
                             <input type="password" id="loginPassword" placeholder="পাসওয়ার্ড" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                     </div>
-                     <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-lg shadow-md transition text-center flex items-center justify-center gap-2">
-   <i class="fa-solid fa-lock-open"></i> লগইন করুন
- </button>
- 
+                    <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-lg shadow-md transition text-center flex items-center justify-center gap-2">
+    <i class="fa-solid fa-lock-open"></i> লগইন করুন
+</button>
 
                     <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg space-y-1 text-xs text-blue-900 font-medium">
                         <p class="font-bold text-sm text-blue-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশাবলী:</p>
@@ -148,7 +159,7 @@
                         <p class="text-red-600 font-bold">৭. কারো তথ্য ভূল এন্ট্রি হলে ০১৬৪১৬৬৩৫৯৬ এ যোগাযোগ করতে হবে।</p>
                     </div>
 
-                   
+                    
                 </form>
             </div>
 
@@ -194,9 +205,9 @@
                             <input type="password" id="regPassword" placeholder="পাসওয়ার্ড লিখুন" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                     </div>
-                       <button type="submit" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-lg shadow-md transition text-center flex items-center justify-center gap-2">
-     <i class="fa-solid fa-user-check"></i> আইডি রেজিস্ট্রেশন করুন
-   </button>
+                    <button type="submit" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-lg shadow-md transition text-center flex items-center justify-center gap-2">
+    <i class="fa-solid fa-user-check"></i> আইডি রেজিস্ট্রেশন করুন
+</button>
 
                     <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg space-y-1 text-xs text-amber-900 font-medium">
                         <p class="font-bold text-sm text-amber-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> রেজিস্ট্রেশন নির্দেশাবলী:</p>
@@ -205,7 +216,7 @@
                         <p>৩. প্রতিটি ইউনিট হতে ফরওয়ার্ডিং প্রিন্ট করে রিজার্ভ অফিসে প্রেরণ করতে হবে।</p>
                     </div>
 
-                 
+                    
                 </form>
             </div>
 
@@ -608,7 +619,7 @@
 
     <!-- PRINT SECTION: FORWARDING LETTER -->
     <div id="printArea" class="hidden">
-        <div style="font-family: 'SolaimanLipi', sans-serif; font-size: 14px; line-height: 1.6; color: #000;">
+        <div style="font-family: 'SolaimanLipi', sans-serif; font-size: 14px; line-height: 1.6; color: #000; padding-bottom: 30px;">
             <p>বরাবর</p>
             <p style="padding-left: 0.5in;">পুলিশ সুপার</p>
             <p style="padding-left: 0.5in;">বান্দরবান পার্বত্য জেলা।</p>
@@ -633,7 +644,7 @@
                 <thead>
                     <tr style="background-color: #f2f2f2; text-align: center;">
                         <th style="border: 1px solid #000; padding: 6px; width: 6%;">ক্রমিক</th>
-                        <th style="border: 1px solid #000; padding: 6px; width: 34%;">পদবি / ব্রাশ নং / নাম ও বিপি</th>
+                        <th style="border: 1px solid #000; padding: 6px; width: 34%;">পদবি,ব্রাশ নং, নাম ও বিপি</th>
                         <th style="border: 1px solid #000; padding: 6px; width: 18%;">ইউনিটের নাম</th>
                         <th style="border: 1px solid #000; padding: 6px; width: 18%;">ইমেইল</th>
                         <th style="border: 1px solid #000; padding: 6px; width: 14%;">মোবাইল নম্বর</th>
@@ -645,7 +656,7 @@
                 </tbody>
             </table>
 
-            <p style="margin-top: 15px; text-align: justify;">
+            <p style="text-indent: 0.5in; margin-top: 15px; text-align: justify;">
                 উল্লেখ যে, NGPIMS যাচাইপূর্বক অত্র ইউনিটে কর্মরত অন্য কোন পুলিশ সদস্যদের NGPIMS এ মোবাইল নম্বর ও ই-মেইল সমস্যা নেই।
             </p>
 
@@ -658,9 +669,9 @@
             </div>
             <div style="clear: both;"></div>
 
-            <!-- Print Footer Info -->
-            <div style="margin-top: 40px; font-size: 10px; color: #444; border-t: 1px solid #ccc; padding-top: 4px;">
-                <span>প্রিন্টের তারিখ ও সময়: <span id="printDateTime"></span></span> | 
+            <!-- Print Footer Info (Fixed at bottom during print) -->
+            <div class="print-footer">
+                <span>প্রিন্টের তারিখ ও সময়: <span id="printDateTime"></span></span>
                 <span>Dev. by T261</span>
             </div>
         </div>
@@ -876,9 +887,8 @@
             if (currentUser.role === "admin" || currentUser.role === "developer") {
                 unitSelectContainer.classList.remove("hidden");
                 entryUnitSelect.required = true;
-                entryUnitSelect.value = ""; // Admin/Dev can choose any unit
+                entryUnitSelect.value = "";
             } else {
-                // Normal Unit User -> Automatically set and lock to their own unit
                 unitSelectContainer.classList.add("hidden");
                 entryUnitSelect.required = false;
                 entryUnitSelect.value = currentUser.unit;
@@ -911,7 +921,6 @@
             } else if (currentUser.role === "developer") {
                 tabs = [
                     { id: "tabEntry", label: "ডাটা এন্ট্রি", icon: "fa-pen-to-square" },
-                    { id: "tabManpower", label: "জনবল ডাটা ও ফরওয়ার্ডিং", icon: "fa-users" },
                     { id: "tabAllDatabase", label: "অল ডাটা বেইজ", icon: "fa-database" },
                     { id: "tabUnitWise", label: "ইউনিট ভিত্তিক ডাটা", icon: "fa-filter" },
                     { id: "tabStats", label: "পরিসংখ্যান", icon: "fa-chart-pie" },
@@ -929,7 +938,6 @@
                 tabsNav.appendChild(btn);
             });
 
-            // Show first tab by default
             if (tabs.length > 0) {
                 switchTab(tabs[0].id, tabsNav.children[0]);
             }
@@ -1038,7 +1046,7 @@
             }
         }
 
-        // Render User Manpower Data & Print Setup
+        // Render User Manpower Data & Print Setup (With empty state handled as requested)
         function renderUserManpowerTable() {
             const tbody = document.getElementById("userManpowerTableBody");
             const printTbody = document.getElementById("printTableBody");
@@ -1048,17 +1056,27 @@
             let userItems = allManpowerData.filter(d => d.Unit === currentUser.unit);
             userItems = sortManpowerList(userItems);
 
-            // Print Header Setup
+            // Print Header & Footer Info Setup
             document.getElementById("printUnitName").innerText = currentUser.unit;
-            document.getElementById("printSignName").innerText = currentUser.name;
-            document.getElementById("printSignBP").innerText = `বিপি- ${currentUser.bp}`;
+            document.getElementById("printSignName").innerText = `(${currentUser.name})`;
+            document.getElementById("printSignBP").innerText = currentUser.bp;
             document.getElementById("printSignDesig").innerText = currentUser.designation;
             document.getElementById("printSignUnit").innerText = `${currentUser.unit}, বান্দরবান।`;
             document.getElementById("printDateTime").innerText = new Date().toLocaleString('bn-BD');
 
             if (userItems.length === 0) {
                 tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500">কোন ডাটা পাওয়া যায়নি</td></tr>`;
-                printTbody.innerHTML = `<tr><td colspan="6" style="border:1px solid #000; padding:15px; text-align:center;">কোন ডাটা এন্ট্রি করা হয়নি</td></tr>`;
+                
+                printTbody.innerHTML = `
+                    <tr>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">১</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">---</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">${currentUser.unit}</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">---</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">---</td>
+                        <td style="border:1px solid #000; padding:6px; text-align:center;">কোন তথ্য এন্ট্রি নাই</td>
+                    </tr>
+                `;
                 return;
             }
 
@@ -1077,7 +1095,6 @@
                     </tr>
                 `;
 
-                // Printable Forwarding Row Format
                 const brushText = item.BrushNo ? ` / ${item.BrushNo}` : '';
                 printTbody.innerHTML += `
                     <tr>
@@ -1209,7 +1226,6 @@
                 `;
             });
 
-            // Footer Totals Row
             let totalCountsHtml = "";
             desigKeys.forEach(k => {
                 totalCountsHtml += `<td class="p-2 border text-center font-bold">${totals[k]}</td>`;
