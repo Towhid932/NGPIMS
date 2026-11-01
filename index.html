@@ -66,8 +66,8 @@
             <div class="flex items-center space-x-3">
                 <i class="fa-solid fa-shield-halved text-3xl text-yellow-400"></i>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-bold leading-tight">NGPIMS মোবাইল ও ই-মেইল পরিবর্তন পোর্টাল</h1>
-                    <p class="text-xs text-blue-200">পুলিশ সুপারের কার্যালয়, বান্দরবান পার্বত্য জেলা</p>
+                    <h1 class="text-xl md:text-2xl font-bold leading-tight">NGPIMS মোবাইল ও ই-মেইল পরিবর্তন</h1>
+                    <p class="text-xs text-blue-200">রিজার্ভ অফিস, বান্দরবান পার্বত্য জেলা</p>
                 </div>
             </div>
             <div id="userInfoHeader" class="hidden flex items-center space-x-4">
@@ -218,17 +218,26 @@
                 </nav>
             </div>
 
-            <!-- TAB 1: DATA ENTRY (For Users) -->
+            <!-- TAB 1: DATA ENTRY (For Users, Admins, and Developers) -->
             <div id="tabEntry" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6">
                     <h3 class="text-lg font-bold text-blue-900 border-b pb-3 mb-4 flex items-center gap-2">
                         <i class="fa-solid fa-pen-to-square text-blue-600"></i> পুলিশ সদস্যের মোবাইল ও ই-মেইল সংশোধন এন্ট্রি ফরম
                     </h3>
                     <form id="dataEntryForm" onsubmit="handleDataEntry(event)" class="space-y-4">
+                        
+                        <!-- Unit Selection Field for Admin / Developer (or normal user unit indicator) -->
+                        <div id="unitSelectionContainer" class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                            <label class="block text-sm font-bold text-blue-900 mb-1">ইউনিটের নাম সিলেক্ট করুন <span class="text-red-500">*</span></label>
+                            <select id="entryUnitSelect" required class="w-full border border-gray-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <option value="">ইউনিট নির্বাচন করুন</option>
+                            </select>
+                        </div>
+
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি নম্বর (১২ ডিজিট) <span class="text-red-500">*</span></label>
-                                <input type="text" id="entryBP" placeholder="e.g. BP1234567890" maxlength="12" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="text" id="entryBP" placeholder=" BP1234567890" maxlength="12" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">পদবি <span class="text-red-500">*</span></label>
@@ -250,19 +259,19 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">ব্রাশ নং <span class="text-xs text-gray-400">(ঐচ্ছিক)</span></label>
-                                <input type="text" id="entryBrushNo" placeholder="ব্রাশ নম্বর" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="number" id="entryBrushNo" maxlength="4" placeholder="ব্রাশ নম্বর" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">নাম <span class="text-red-500">*</span></label>
-                                <input type="text" id="entryName" placeholder="পুলিশ সদস্যের নাম" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="text" id="entryName" placeholder="পুলিশ সদস্যের নাম বাংলায়" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">নতুন মোবাইল নম্বর (১১ ডিজিট)</label>
-                                <input type="text" id="entryMobile" placeholder="e.g. 01700000000" maxlength="11" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="tel" id="entryMobile" placeholder=" 01700000000" maxlength="11" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">নতুন ই-মেইল</label>
-                                <input type="email" id="entryEmail" placeholder="e.g. example@gmail.com" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="email" id="entryEmail" placeholder=" example@gmail.com" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                         </div>
 
@@ -667,7 +676,7 @@
         // ==========================================
         // GOOGLE APPS SCRIPT BACKEND URL
         // ==========================================
-        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyIsXuSzMnW7pbevjv0607mdUu9ZxW1oqnkR8nlLRr2GufNLjAvRzc8nqGl3vEI69U8_Q/exec";
+        const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxWpGWBrPiJ9O1eC0p-hLy7Qk7iarBm858KKyoulZT7L3r1Pt68IE3XbZMIvT2f5zH7Q/exec";
 
         // Dynamic Options
         const UNITS_LIST = [
@@ -734,6 +743,7 @@
         function populateUnitsDropdown() {
             const regUnit = document.getElementById("regUnit");
             const filterUnit = document.getElementById("filterUnitSelect");
+            const entryUnit = document.getElementById("entryUnitSelect");
             
             UNITS_LIST.forEach(unit => {
                 const opt1 = document.createElement("option");
@@ -745,6 +755,11 @@
                 opt2.value = unit;
                 opt2.textContent = unit;
                 filterUnit.appendChild(opt2);
+
+                const opt3 = document.createElement("option");
+                opt3.value = unit;
+                opt3.textContent = unit;
+                entryUnit.appendChild(opt3);
             });
         }
 
@@ -804,7 +819,7 @@
             if (res.success) {
                 showModal("রেজিস্ট্রেশন সফল", res.message);
                 document.getElementById("registrationForm").reset();
-                switchAuthView('login'); // Return to login after successful registration
+                switchAuthView('login');
             } else {
                 showModal("রেজিস্ট্রেশন ব্যর্থ", res.message);
             }
@@ -851,6 +866,21 @@
             document.getElementById("navUserName").innerText = currentUser.name;
             document.getElementById("navUserRole").innerText = `${currentUser.designation} (${currentUser.unit})`;
 
+            // Configure Unit Selection in Data Entry Form based on Role
+            const unitSelectContainer = document.getElementById("unitSelectionContainer");
+            const entryUnitSelect = document.getElementById("entryUnitSelect");
+
+            if (currentUser.role === "admin" || currentUser.role === "developer") {
+                unitSelectContainer.classList.remove("hidden");
+                entryUnitSelect.required = true;
+                entryUnitSelect.value = ""; // Admin/Dev can choose any unit
+            } else {
+                // Normal Unit User -> Automatically set and lock to their own unit
+                unitSelectContainer.classList.add("hidden");
+                entryUnitSelect.required = false;
+                entryUnitSelect.value = currentUser.unit;
+            }
+
             setupTabs();
             await fetchAllData();
         }
@@ -868,6 +898,7 @@
                 ];
             } else if (currentUser.role === "admin") {
                 tabs = [
+                    { id: "tabEntry", label: "ডাটা এন্ট্রি", icon: "fa-pen-to-square" },
                     { id: "tabAllDatabase", label: "অল ডাটা বেইজ", icon: "fa-database" },
                     { id: "tabUnitWise", label: "ইউনিট ভিত্তিক ডাটা", icon: "fa-filter" },
                     { id: "tabStats", label: "পরিসংখ্যান", icon: "fa-chart-pie" },
@@ -876,6 +907,7 @@
                 ];
             } else if (currentUser.role === "developer") {
                 tabs = [
+                    { id: "tabEntry", label: "ডাটা এন্ট্রি", icon: "fa-pen-to-square" },
                     { id: "tabAllDatabase", label: "অল ডাটা বেইজ", icon: "fa-database" },
                     { id: "tabUnitWise", label: "ইউনিট ভিত্তিক ডাটা", icon: "fa-filter" },
                     { id: "tabStats", label: "পরিসংখ্যান", icon: "fa-chart-pie" },
@@ -953,6 +985,10 @@
         // Handle Data Entry
         async function handleDataEntry(e) {
             e.preventDefault();
+            const targetUnit = (currentUser.role === "admin" || currentUser.role === "developer") 
+                ? document.getElementById("entryUnitSelect").value 
+                : currentUser.unit;
+
             const bp = document.getElementById("entryBP").value.trim();
             const desig = document.getElementById("entryDesignation").value;
             const brushNo = document.getElementById("entryBrushNo").value.trim();
@@ -961,6 +997,10 @@
             const email = document.getElementById("entryEmail").value.trim();
             const comments = document.getElementById("entryComments").value.trim();
 
+            if (!targetUnit) {
+                showModal("ডাটা এন্ট্রি ভুল", "অনুগ্রহ করে ইউনিটের নাম নির্বাচন করুন!");
+                return;
+            }
             if (!/^BP\d{10}$/.test(bp)) {
                 showModal("ডাটা এন্ট্রি ভুল", "বিপি নম্বর অবশ্যই BP সহ ১২ ডিজিট হতে হবে!");
                 return;
@@ -977,7 +1017,7 @@
             const payload = {
                 action: "saveData",
                 bp, designation: desig, brushNo, name,
-                unit: currentUser.unit, mobile, email, comments,
+                unit: targetUnit, mobile, email, comments,
                 enteredByBP: currentUser.bp, enteredByName: currentUser.name
             };
 
@@ -985,6 +1025,9 @@
             if (res.success) {
                 showModal("সফল", res.message);
                 document.getElementById("dataEntryForm").reset();
+                if (currentUser.role === "admin" || currentUser.role === "developer") {
+                    document.getElementById("entryUnitSelect").value = "";
+                }
                 await fetchAllData();
             } else {
                 showModal(res.isDuplicate ? "ডুপ্লিকেট ডাটা!" : "ত্রুটি", res.message);
