@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>মোবাইল ও ই-মেইল সার্চ/আবেদন পোর্টাল - বান্দরবান</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- SheetJS for Excel Download -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <!-- SolaimanLipi Font -->
+    <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
+    <style>
+        body { font-family: 'SolaimanLipi', sans-serif; }
+        @media print {
+            body * { visibility: hidden; }
+            #printArea, #printArea * { visibility: visible; }
+            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+            @page {
+                size: A4;
+                margin-left: 1in;
+                margin-top: 1in;
+                margin-right: 0.5in;
+                margin-bottom: 0.5in;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-blue-900 text-white p-4 shadow-md flex justify-between items-center">
+        <div>
+            <h1 class="text-xl font-bold">NGPIMS মোবাইল ও ই-মেইল সংশোধনের সার্চ ও আবেদন পোর্টাল</h1>
+            <p class="text-xs text-blue-200">জেলা পুলিশ, বান্দরবান পার্বত্য জেলা</p>
+        </div>
+        <div id="authSection">
+            <button onclick="openLoginModal()" id="loginBtn" class="bg-amber-500 hover:bg-amber-600 text-white px-4 py-1.5 rounded text-sm font-semibold transition">লগইন</button>
+            <div id="userProfile" class="hidden flex items-center gap-3">
+                <span class="text-sm font-medium bg-blue-800 px-3 py-1 rounded-full border border-blue-700" id="userNameRole"></span>
+                <button onclick="logout()" class="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded text-xs transition">লগআউট</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto p-4">
+
+        <!-- Top Controls / BP-CIV Search Input Box -->
+        <div class="bg-white p-5 rounded-lg shadow-sm border mb-6">
+            <label class="block text-sm font-semibold text-gray-700 mb-2">BP / CIV নম্বর টাইপ করুন (BP সহ ১২ ডিজিট / CIV সহ ১৩ ডিজিট):</label>
+            <div class="flex flex-wrap gap-2">
+                <input type="text" id="mainBpInput" placeholder="उदा: BP9920229921 বা CIV1234567890" class="flex-1 min-w-[280px] p-2 border rounded focus:ring-2 focus:ring-blue-500 outline-none">
+                <button onclick="handleSearch()" class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded font-medium text-sm transition flex items-center gap-1">
+                    🔍 সার্চ
+                </button>
+                <button onclick="handleAppPrint()" class="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2 rounded font-medium text-sm transition flex items-center gap-1">
+                    🖨️ আবেদন প্রিন্ট
+                </button>
+                <button onclick="openAppFormModal()" class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded font-medium text-sm transition flex items-center gap-1">
+                    📝 আবেদন ফরম
+                </button>
+            </div>
+            <p id="bpValidationError" class="text-red-500 text-xs mt-1 hidden font-semibold"></p>
+        </div>
+
+        <!-- Admin View Tabs (Visible after Login) -->
+        <div id="adminTabSection" class="hidden mb-6">
+            <div class="border-b border-gray-200 bg-white rounded-t-lg">
+                <nav class="flex overflow-x-auto text-sm font-medium text-center text-gray-500">
+                    <button onclick="switchTab('allDataTab')" id="tab-allDataTab" class="tab-btn px-4 py-3 border-b-2 border-blue-600 text-blue-600 font-bold">অল ডাটাবেজ</button>
+                    <button onclick="switchTab('appDataTab')" id="tab-appDataTab" class="tab-btn px-4 py-3 border-b-2 border-transparent hover:text-gray-600">আবেদন ডাটাবেজ</button>
+                    <button onclick="switchTab('summaryTab')" id="tab-summaryTab" class="tab-btn px-4 py-3 border-b-2 border-transparent hover:text-gray-600">ইউনিট ওয়ারী সামারী</button>
+                    <button onclick="switchTab('deletedTab')" id="tab-deletedTab" class="tab-btn px-4 py-3 border-b-2 border-transparent hover:text-gray-600">ডিলিট হিস্ট্রি</button>
+                </nav>
+            </div>
+
+            <!-- Tab Contents -->
+            <div class="bg-white p-4 rounded-b-lg border border-t-0 shadow-sm">
+                <!-- All Data Tab -->
+                <div id="allDataTab" class="tab-content">
+                    <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
+                        <button onclick="openAddDataModal()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700">+ নতুন ডাটা এড</button>
+                        <button onclick="exportToExcel('allDataTable', 'All_Database')" class="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:bg-green-700">📥 Excel ডাউনলোড</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="allDataTable" class="w-full text-xs text-left border-collapse">
+                            <thead class="bg-gray-100 uppercase border-b">
+                                <tr>
+                                    <th class="p-2 border">ক্রঃ</th>
+                                    <th class="p-2 border">BP/CIV</th>
+                                    <th class="p-2 border">Rank</th>
+                                    <th class="p-2 border">ব্রাশ নং</th>
+                                    <th class="p-2 border">নাম</th>
+                                    <th class="p-2 border">ইউনিট</th>
+                                    <th class="p-2 border">মোবাইল</th>
+                                    <th class="p-2 border">ই-মেইল</th>
+                                    <th class="p-2 border">আবেদন স্ট্যাটাস</th>
+                                    <th class="p-2 border text-center">অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="allDataTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Application Data Tab -->
+                <div id="appDataTab" class="tab-content hidden">
+                    <div class="flex justify-end mb-4">
+                        <button onclick="exportToExcel('appDataTable', 'Applications')" class="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:bg-green-700">📥 Excel ডাউনলোড</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="appDataTable" class="w-full text-xs text-left border-collapse">
+                            <thead class="bg-gray-100 uppercase border-b">
+                                <tr>
+                                    <th class="p-2 border">ক্রঃ</th>
+                                    <th class="p-2 border">BP/CIV</th>
+                                    <th class="p-2 border">Rank & Brash</th>
+                                    <th class="p-2 border">নাম</th>
+                                    <th class="p-2 border">ইউনিট</th>
+                                    <th class="p-2 border">নতুন মোবাইল</th>
+                                    <th class="p-2 border">নতুন ই-মেইল</th>
+                                    <th class="p-2 border">মন্তব্য</th>
+                                    <th class="p-2 border text-center">অ্যাকশন</th>
+                                </tr>
+                            </thead>
+                            <tbody id="appDataTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Summary Tab -->
+                <div id="summaryTab" class="tab-content hidden">
+                    <div class="flex justify-end mb-4">
+                        <button onclick="exportToExcel('summaryTable', 'Unit_Summary')" class="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:bg-green-700">📥 Excel ডাউনলোড</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="summaryTable" class="w-full text-xs text-left border-collapse">
+                            <thead class="bg-gray-100 border-b">
+                                <tr>
+                                    <th class="p-2 border">ইউনিটের নাম</th>
+                                    <th class="p-2 border">আবেদনকৃত Rank সমূহ ও সংখ্যা</th>
+                                    <th class="p-2 border text-center font-bold">মোট আবেদন সংখ্যা</th>
+                                </tr>
+                            </thead>
+                            <tbody id="summaryTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Deleted History Tab -->
+                <div id="deletedTab" class="tab-content hidden">
+                    <div class="flex justify-end mb-4">
+                        <button onclick="exportToExcel('deletedTable', 'Deleted_History')" class="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:bg-green-700">📥 Excel ডাউনলোড</button>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table id="deletedTable" class="w-full text-xs text-left border-collapse">
+                            <thead class="bg-gray-100 border-b">
+                                <tr>
+                                    <th class="p-2 border">ক্রঃ</th>
+                                    <th class="p-2 border">BP/CIV</th>
+                                    <th class="p-2 border">Rank</th>
+                                    <th class="p-2 border">নাম</th>
+                                    <th class="p-2 border">ইউনিট</th>
+                                    <th class="p-2 border">মুছে ফেলার সময়</th>
+                                </tr>
+                            </thead>
+                            <tbody id="deletedTableBody"></tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals & Popups -->
+    
+    <!-- Loading Animation -->
+    <div id="loadingSpinner" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-center justify-center hidden">
+        <div class="bg-white p-5 rounded-lg shadow-xl flex items-center gap-3">
+            <div class="w-7 h-7 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
+            <span class="text-sm font-semibold text-gray-700">ডাটা প্রসেস হচ্ছে...</span>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="fixed inset-0 bg-black/50 z-40 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-bold mb-4 text-center border-b pb-2">এডমিন লগইন</h3>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">User ID</label>
+                    <input type="text" id="loginId" class="w-full p-2 border rounded text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Password</label>
+                    <input type="password" id="loginPass" class="w-full p-2 border rounded text-sm outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button onclick="closeModal('loginModal')" class="px-4 py-1.5 text-sm bg-gray-200 rounded">বাতিল</button>
+                    <button onclick="submitLogin()" class="px-4 py-1.5 text-sm bg-blue-600 text-white rounded">লগইন</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Entry Form Modal -->
+    <div id="appFormModal" class="fixed inset-0 bg-black/50 z-40 hidden flex items-center justify-center p-4 overflow-y-auto">
+        <div class="bg-white w-full max-w-lg rounded-lg shadow-lg p-6 my-8">
+            <h3 class="text-lg font-bold mb-4 border-b pb-2">NGPIMS সংশোধন আবেদন ফরম</h3>
+            <form id="appEntryForm" onsubmit="submitApplication(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold mb-1">BP/CIV নম্বর <span class="text-red-500">*</span></label>
+                    <input type="text" id="formBp" oninput="checkAndAutoFillBP(this.value)" required placeholder="BP... বা CIV..." class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1">Rank</label>
+                        <input type="text" id="formRank" readonly class="w-full p-2 border bg-gray-100 rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">নাম</label>
+                        <input type="text" id="formName" readonly class="w-full p-2 border bg-gray-100 rounded">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">ব্রাশ নং (ঐচ্ছিক)</label>
+                    <input type="text" id="formBrash" class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">ইউনিট সিলেক্ট করুন <span class="text-red-500">*</span></label>
+                    <select id="formUnitSelect" onchange="handleUnitSelect(this.value)" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500" required>
+                        <option value="">-- সিলেক্ট করুন --</option>
+                    </select>
+                    <input type="text" id="formUnitOther" placeholder="অন্যান্য ইউনিটের নাম লিখুন" class="w-full p-2 border rounded mt-2 hidden">
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1">নতুন মোবাইল নম্বর</label>
+                        <input type="text" id="formMobile" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">নতুন ই-মেইল</label>
+                        <input type="email" id="formEmail" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">মন্তব্য (ঐচ্ছিক)</label>
+                    <textarea id="formRemark" rows="2" class="w-full p-2 border rounded"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('appFormModal')" class="px-4 py-1.5 bg-gray-200 text-gray-700 rounded">বাতিল</button>
+                    <button type="submit" class="px-4 py-1.5 bg-indigo-600 text-white rounded font-medium">আবেদন সংরক্ষণ করুন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Add Data Modal -->
+    <div id="addDataModal" class="fixed inset-0 bg-black/50 z-40 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-md rounded-lg shadow-lg p-6">
+            <h3 class="text-lg font-bold mb-4 border-b pb-2">অল ডাটাবেজে তথ্য যুক্ত করুন</h3>
+            <form id="adminAddForm" onsubmit="submitAddData(event)" class="space-y-3 text-xs">
+                <div>
+                    <label class="block font-semibold mb-1">BP/CIV <span class="text-red-500">*</span></label>
+                    <input type="text" id="addBp" required class="w-full p-2 border rounded">
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">Rank <span class="text-red-500">*</span></label>
+                    <select id="addRank" required class="w-full p-2 border rounded"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1">ব্রাশ নং</label>
+                        <input type="text" id="addBrash" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">নাম <span class="text-red-500">*</span></label>
+                        <input type="text" id="addName" required class="w-full p-2 border rounded">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">ইউনিট</label>
+                    <select id="addUnit" required class="w-full p-2 border rounded"></select>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div>
+                        <label class="block font-semibold mb-1">মোবাইল</label>
+                        <input type="text" id="addMobile" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">ই-মেইল</label>
+                        <input type="email" id="addEmail" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-semibold mb-1">মন্তব্য</label>
+                    <input type="text" id="addRemark" class="w-full p-2 border rounded">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('addDataModal')" class="px-4 py-1.5 bg-gray-200 rounded">বাতিল</button>
+                    <button type="submit" class="px-4 py-1.5 bg-blue-600 text-white rounded">সংরক্ষণ করুন</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Search Result Popup -->
+    <div id="searchPopup" class="fixed inset-0 bg-black/50 z-40 hidden flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-lg shadow-xl p-5 border-t-4 border-blue-600">
+            <h3 class="text-base font-bold text-gray-800 border-b pb-2 mb-3">সার্চ ফলাফল</h3>
+            <div id="searchPopupContent" class="space-y-2 text-sm text-gray-700"></div>
+            <div class="mt-4 text-right">
+                <button onclick="closeModal('searchPopup')" class="bg-blue-600 text-white px-4 py-1.5 rounded text-xs font-semibold">বন্ধ করুন</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Printable Application Container (A4 Printable Area) -->
+    <div id="printArea" class="hidden"></div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // ⚠️ আপনার Apps Script Web App URL এখানে বসান
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGJ4-oO8fdnTurrlAkQCF8YlqPj633dsdHgj6V4ae2UQPh7XlN788QFow7R2W7ayLdtg/exec";
+
+        const UNITS = [
+            "সদর থানা", "রুমা থানা", "রোয়াংছড়ি থানা", "নাইক্ষ্যংছড়ি থানা", "আলীকদম থানা", "থানচি থানা", "লামা থানা", 
+            "ঘুমধুম তদন্ত কেন্দ্র", "বাইশারী তদন্ত কেন্দ্র", "টংকাবতি তদন্ত কেন্দ্র", "সদর ফাঁড়ি", "বাইশারী ফাঁড়ি", 
+            "কেয়াজুপাড়া ফাঁড়ি", "গজালিয়া ফাঁড়ি", "সোনাইছড়ি ফাঁড়ি", "ফাইতং ফাঁড়ি", "রাজবিল্লা ফাঁড়ি", "ডিবি", "ডিএসবি", 
+            "সদর কোর্ট", "লামা কোর্ট", "সদর ট্রাফিক", "লামা ট্রাফিক", "আলীকদম ট্রাফিক", "নাইক্ষ্যংছড়ি ট্রাফিক", 
+            "পুলিশ সুপারের কার্যালয়", "পুলিশ লাইন", "এমটি", "পুলিশ কন্ট্রোল রুম", "ডিপার্টমেন্টাল স্টোর", "অস্ত্রাগার", 
+            "রেশন স্টোর", "ব্যান্ড গ্রুপ", "রিজার্ভ অফিস", "সদর সার্কেল অফিস", "লামা সার্কেল অফিস", "রুমা সার্কেল অফিস", 
+            "আরআই অফিস", "মেজর অফিস", "চিম্বুক ক্যাম্প", "মেঘলা ক্যাম্প", "মিলনছড়ি ক্যাম্প", "হানসামপাড়া ক্যাম্প", 
+            "বেতছড়া ক্যাম্প", "তারাছামূখ ক্যাম্প", "তালুকদারপাড়া ক্যাম্প", "মুরংবাজার ক্যাম্প", "কৈক্ষ্যংঝিরি ক্যাম্প", 
+            "কুমারী ক্যাম্প", "আজিজনগর ক্যাম্প", "আলীক্ষ্যং ক্যাম্প", "২৬-কিলো ক্যাম্প", "রেইচা চেকপোষ্ট", "ডুলুপাড়া চেকপোষ্ট", 
+            "ইয়াংছা চেকপোষ্ট", "রুমা এসবি গার্ড", "রোয়াংছড়ি এসবি গার্ড", "বেতার বেইজ", "অন্যান্য"
+        ];
+
+        const RANKS = [
+            "কনস্টেবল", "নায়েক", "এএসআই (নিরস্ত্র)", "এএসআই (সশস্ত্র)", "এটিএসআই", "এসআই (নিরস্ত্র)", "এসআই (সশস্ত্র)", 
+            "ইন্সপেক্টর (নিরস্ত্র)", "ইন্সপেক্টর (সশস্ত্র)", "ইন্সপেক্টর (টিটি)", "হিসাব রক্ষণ কর্মকর্তা", 
+            "সাঁটলিপিকার-কাম-কম্পিউটার অপারেটর", "সাঁট মুদ্রাক্ষরিক", "নার্সিং সহকারী", "বিক্রয় সহকারী", "বাবুর্চী", "পরিচ্ছন্নতা কর্মী"
+        ];
+
+        let currentUser = null;
+        let cachedAllData = [];
+
+        window.onload = function() {
+            populateDropdowns();
+        };
+
+        function showLoading() { document.getElementById('loadingSpinner').classList.remove('hidden'); }
+        function hideLoading() { document.getElementById('loadingSpinner').classList.add('hidden'); }
+        function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
+        function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
+
+        function populateDropdowns() {
+            const unitSelect = document.getElementById('formUnitSelect');
+            const addUnit = document.getElementById('addUnit');
+            const addRank = document.getElementById('addRank');
+
+            unitSelect.innerHTML = '<option value="">-- সিলেক্ট করুন --</option>';
+            addUnit.innerHTML = '<option value="">-- সিলেক্ট করুন --</option>';
+            addRank.innerHTML = '<option value="">-- সিলেক্ট করুন --</option>';
+
+            UNITS.forEach(u => {
+                unitSelect.innerHTML += `<option value="${u}">${u}</option>`;
+                addUnit.innerHTML += `<option value="${u}">${u}</option>`;
+            });
+
+            RANKS.forEach(r => {
+                addRank.innerHTML += `<option value="${r}">${r}</option>`;
+            });
+        }
+
+        function validateBpCiv(val) {
+            val = val.trim();
+            if (val.startsWith("BP") && val.length === 12) return true;
+            if (val.startsWith("CIV") && val.length === 13) return true;
+            return false;
+        }
+
+        async function handleSearch() {
+            const input = document.getElementById('mainBpInput').value.trim();
+            const err = document.getElementById('bpValidationError');
+
+            if (!validateBpCiv(input)) {
+                err.innerText = "ভুল ইনপুট! BP সহ ১২ ডিজিট অথবা CIV সহ ১৩ ডিজিট লিখুন।";
+                err.classList.remove('hidden');
+                return;
+            }
+            err.classList.add('hidden');
+
+            showLoading();
+            try {
+                const res = await fetch(`${APPS_SCRIPT_URL}?action=searchBP&bpciv=${encodeURIComponent(input)}`);
+                const result = await res.json();
+                hideLoading();
+
+                if (result.success && result.data) {
+                    const d = result.data;
+                    document.getElementById('searchPopupContent').innerHTML = `
+                        <p><strong>Rank:</strong> ${d.Rank || '-'}</p>
+                        <p><strong>ব্রাশ নং:</strong> ${d.BrashNo || '-'}</p>
+                        <p><strong>নাম:</strong> ${d.Name || '-'}</p>
+                        <p><strong>মোবাইল নম্বর:</strong> ${d.Mobile || '-'}</p>
+                        <p><strong>ই-মেইল:</strong> ${d.Email || '-'}</p>
+                    `;
+                    openModal('searchPopup');
+                } else {
+                    alert("ডাটাবেজে এই BP/CIV নম্বর পাওয়া যায়নি!");
+                }
+            } catch (e) {
+                hideLoading();
+                alert("সার্চ করতে সমস্যা হয়েছে!");
+            }
+        }
+
+        async function handleAppPrint() {
+            const input = document.getElementById('mainBpInput').value.trim();
+            if (!validateBpCiv(input)) {
+                alert("সঠিক BP/CIV নম্বর লিখুন!");
+                return;
+            }
+
+            showLoading();
+            try {
+                const res = await fetch(`${APPS_SCRIPT_URL}?action=searchAppPrint&bpciv=${encodeURIComponent(input)}`);
+                const result = await res.json();
+                hideLoading();
+
+                if (result.success && result.data) {
+                    renderPrintDocument(result.data);
+                    window.print();
+                } else {
+                    alert("আবেদন ডাটাবেজে এই BP/CIV এর কোনো আবেদন পাওয়া যায়নি!");
+                }
+            } catch (e) {
+                hideLoading();
+                alert("তথ্য লোড করতে সমস্যা হয়েছে!");
+            }
+        }
+
+        function renderPrintDocument(data) {
+            const isPolice = data.BP_CIV.startsWith("BP");
+            const identityType = isPolice ? "পুলিশ সদস্য" : "নন-পুলিশ সদস্যা";
+            const now = new Date();
+            const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.toLocaleTimeString()}`;
+
+            const html = `
+                <div class="text-black text-sm leading-relaxed">
+                    <p>বরাবর</p>
+                    <p style="padding-left: 0.5in;">পুলিশ সুপার</p>
+                    <p style="padding-left: 0.5in;">বান্দরবান পার্বত্য জেলা।</p>
+                    <p class="mt-2">মাধ্যমঃ যথাযথ কর্তৃপক্ষ।</p>
+                    <p class="mt-2 font-bold">বিষয়ঃ NGPIMS এ মোবাইল নম্বর ও ই-মেইল সংশোধন প্রসঙ্গে।</p>
+                    <p class="mt-1">সুত্রঃ রিজার্ভ অফিস, বান্দরবান এর স্মারক নং-৪৪৪/আরও, তারিখ-০২/১১/২০২৬খ্রি.।</p>
+                    
+                    <p class="mt-4">জনাব</p>
+                    <p style="text-indent: 0.5in;" class="mt-1 text-justify">
+                        যথাবিহীত সম্মানপূর্বক বিনীত নিবেদন এই যে, আমি ${data.Rank}/${data.BrashNo || ''} ${data.Name}, ${data.BP_CIV} আপনার অধীনস্থ একজন ${identityType}। বর্তমানে ${data.Unit}, বান্দরবান পার্বত্য জেলায় কর্মরত আছি। NGPIMS ডাটা বেইজ এ আমার মোবাইল নম্বর ও ই-মেইল ভূল/এন্ট্রি না থাকায় প্রশাসনিক জঠিলতা সৃষ্টি হচ্ছে। এমতাবস্থায়, আমার নিম্নে বর্ণিত তথ্যগুলো NGPIMS ডাটা বেইজ এ সঠিকভাবে না থাকায় আপডেটে করা একান্ত প্রয়োজন।
+                    </p>
+                    
+                    <p style="text-indent: 0.5in;" class="mt-3 text-justify">
+                        অতএব মহোদয়ের নিকট অাকুল আবেদন আমার নিম্নেবর্ণিত তথ্যগুলো NGPIMS ডাটা বেইজ এ আপডেট করার প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য আপনার সদয় মর্জি কামনা করছি।
+                    </p>
+
+                    <table class="w-full border-collapse border border-black my-4 text-xs text-center">
+                        <thead>
+                            <tr class="border-b border-black bg-gray-50">
+                                <th class="border border-black p-1">ক্রমিক</th>
+                                <th class="border border-black p-1">Rank / Brash No, নাম ও বিপি/সিআইডি</th>
+                                <th class="border border-black p-1">ইউনিটের নাম</th>
+                                <th class="border border-black p-1">ই-মেইল</th>
+                                <th class="border border-black p-1">মোবাইল নম্বর</th>
+                                <th class="border border-black p-1">মন্তব্য</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="border border-black p-1">১</td>
+                                <td class="border border-black p-1">${data.Rank}/${data.BrashNo || ''}, ${data.Name}, ${data.BP_CIV}</td>
+                                <td class="border border-black p-1">${data.Unit}</td>
+                                <td class="border border-black p-1">${data.NewEmail || '-'}</td>
+                                <td class="border border-black p-1">${data.NewMobile || '-'}</td>
+                                <td class="border border-black p-1">${data.Remark || '-'}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="mt-12 flex justify-end">
+                        <div class="text-center">
+                            <p class="mb-4">স্বাক্ষর</p>
+                            <p>(${data.Name})</p>
+                            <p>${data.BP_CIV}</p>
+                            <p>${data.Rank}/${data.BrashNo || ''}</p>
+                            <p>${data.Unit}, বান্দরবান।</p>
+                        </div>
+                    </div>
+
+                    <div class="mt-8 border-t pt-1 flex justify-between text-[10px] text-gray-600">
+                        <span>প্রিন্টের তারিখ ও সময়: ${dateStr}</span>
+                        <span>Dev. by T261</span>
+                    </div>
+                </div>
+            `;
+            document.getElementById('printArea').innerHTML = html;
+        }
+
+        function openAppFormModal() {
+            document.getElementById('appEntryForm').reset();
+            document.getElementById('formUnitOther').classList.add('hidden');
+            openModal('appFormModal');
+        }
+
+        async function checkAndAutoFillBP(val) {
+            val = val.trim();
+            const rankInput = document.getElementById('formRank');
+            const nameInput = document.getElementById('formName');
+
+            if (validateBpCiv(val)) {
+                showLoading();
+                try {
+                    const res = await fetch(`${APPS_SCRIPT_URL}?action=searchBP&bpciv=${encodeURIComponent(val)}`);
+                    const result = await res.json();
+                    hideLoading();
+
+                    if (result.success && result.data) {
+                        rankInput.value = result.data.Rank || '';
+                        nameInput.value = result.data.Name || '';
+                    } else {
+                        alert("এই BP/CIV নম্বরটি অল ডাটাবেজে পাওয়া যায়নি!");
+                    }
+                } catch (e) { hideLoading(); }
+            }
+        }
+
+        function handleUnitSelect(val) {
+            const other = document.getElementById('formUnitOther');
+            if (val === "অন্যান্য") other.classList.remove('hidden');
+            else other.classList.add('hidden');
+        }
+
+        async function submitApplication(e) {
+            e.preventDefault();
+            const bpciv = document.getElementById('formBp').value.trim();
+            const rank = document.getElementById('formRank').value;
+            const name = document.getElementById('formName').value;
+            const brashNo = document.getElementById('formBrash').value.trim();
+            let unit = document.getElementById('formUnitSelect').value;
+            if (unit === "অন্যান্য") unit = document.getElementById('formUnitOther').value.trim();
+            const newMobile = document.getElementById('formMobile').value.trim();
+            const newEmail = document.getElementById('formEmail').value.trim();
+            const remark = document.getElementById('formRemark').value.trim();
+
+            if (!newMobile && !newEmail) {
+                alert("নতুন মোবাইল নম্বর অথবা ই-মেইলের মধ্যে অন্তত একটি এন্ট্রি দিতে হবে!");
+                return;
+            }
+
+            showLoading();
+            try {
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'saveApplication',
+                        bpciv, rank, name, brashNo, unit, newMobile, newEmail, remark
+                    })
+                });
+                const result = await res.json();
+                hideLoading();
+
+                if (result.duplicate) {
+                    alert(result.message);
+                } else if (result.success) {
+                    alert(result.message);
+                    closeModal('appFormModal');
+                    if (currentUser) loadAdminData();
+                }
+            } catch (err) {
+                hideLoading();
+                alert("সংরক্ষণ ব্যর্থ হয়েছে!");
+            }
+        }
+
+        function openLoginModal() { openModal('loginModal'); }
+
+        async function submitLogin() {
+            const id = document.getElementById('loginId').value.trim();
+            const password = document.getElementById('loginPass').value.trim();
+
+            showLoading();
+            try {
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'login', id, password })
+                });
+                const result = await res.json();
+                hideLoading();
+
+                if (result.success) {
+                    currentUser = result;
+                    document.getElementById('loginBtn').classList.add('hidden');
+                    document.getElementById('userProfile').classList.remove('hidden');
+                    document.getElementById('userNameRole').innerText = `${result.name} (${result.role})`;
+                    closeModal('loginModal');
+                    document.getElementById('adminTabSection').classList.remove('hidden');
+                    loadAdminData();
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) {
+                hideLoading();
+                alert("লগইন ব্যর্থ হয়েছে!");
+            }
+        }
+
+        function logout() {
+            currentUser = null;
+            document.getElementById('loginBtn').classList.remove('hidden');
+            document.getElementById('userProfile').classList.add('hidden');
+            document.getElementById('adminTabSection').classList.add('hidden');
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('border-blue-600', 'text-blue-600', 'font-bold');
+                btn.classList.add('border-transparent');
+            });
+
+            document.getElementById(tabId).classList.remove('hidden');
+            document.getElementById(`tab-${tabId}`).classList.add('border-blue-600', 'text-blue-600', 'font-bold');
+        }
+
+        async function loadAdminData() {
+            showLoading();
+            try {
+                const [allRes, appRes, delRes] = await Promise.all([
+                    fetch(`${APPS_SCRIPT_URL}?action=getAllData`).then(r => r.json()),
+                    fetch(`${APPS_SCRIPT_URL}?action=getApplications`).then(r => r.json()),
+                    fetch(`${APPS_SCRIPT_URL}?action=getDeleted`).then(r => r.json())
+                ]);
+                hideLoading();
+
+                cachedAllData = allRes;
+                renderAllDataTable(allRes, appRes);
+                renderAppDataTable(appRes);
+                renderSummaryTable(appRes);
+                renderDeletedTable(delRes);
+
+            } catch (e) {
+                hideLoading();
+                alert("ডাটাবেজ লোড করতে সমস্যা হয়েছে!");
+            }
+        }
+
+        function renderAllDataTable(allData, appData) {
+            const appBpSet = new Set(appData.map(a => String(a.BP_CIV).trim()));
+            const tbody = document.getElementById('allDataTableBody');
+            tbody.innerHTML = '';
+
+            allData.forEach((item, index) => {
+                const hasApp = appBpSet.has(String(item.BP_CIV).trim());
+                const statusBadge = hasApp 
+                    ? `<span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded font-bold">আবেদন দাখিল</span>` 
+                    : `<span class="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded">পেন্ডিং</span>`;
+
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-2 border text-center">${index + 1}</td>
+                        <td class="p-2 border font-medium">${item.BP_CIV}</td>
+                        <td class="p-2 border">${item.Rank || '-'}</td>
+                        <td class="p-2 border">${item.BrashNo || '-'}</td>
+                        <td class="p-2 border">${item.Name || '-'}</td>
+                        <td class="p-2 border">${item.Unit || '-'}</td>
+                        <td class="p-2 border">${item.Mobile || '-'}</td>
+                        <td class="p-2 border">${item.Email || '-'}</td>
+                        <td class="p-2 border text-center">${statusBadge}</td>
+                        <td class="p-2 border text-center">
+                            <button onclick="deleteRecord('AllData', '${item.BP_CIV}')" class="text-red-600 hover:text-red-800 font-bold">ডিলিট</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderAppDataTable(appData) {
+            const tbody = document.getElementById('appDataTableBody');
+            tbody.innerHTML = '';
+
+            appData.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-2 border text-center">${index + 1}</td>
+                        <td class="p-2 border font-medium">${item.BP_CIV}</td>
+                        <td class="p-2 border">${item.Rank}/${item.BrashNo || ''}</td>
+                        <td class="p-2 border">${item.Name}</td>
+                        <td class="p-2 border">${item.Unit}</td>
+                        <td class="p-2 border">${item.NewMobile || '-'}</td>
+                        <td class="p-2 border">${item.NewEmail || '-'}</td>
+                        <td class="p-2 border">${item.Remark || '-'}</td>
+                        <td class="p-2 border text-center">
+                            <button onclick="deleteRecord('Applications', '${item.BP_CIV}')" class="text-red-600 hover:text-red-800 font-bold">ডিলিট</button>
+                        </td>
+                    </tr>
+                `;
+            });
+        }
+
+        function renderSummaryTable(appData) {
+            const summaryMap = {};
+
+            appData.forEach(item => {
+                const u = item.Unit || "অন্যান্য";
+                const r = item.Rank || "অজানা Rank";
+                if (!summaryMap[u]) summaryMap[u] = {};
+                summaryMap[u][r] = (summaryMap[u][r] || 0) + 1;
+            });
+
+            const tbody = document.getElementById('summaryTableBody');
+            tbody.innerHTML = '';
+
+            for (let unit in summaryMap) {
+                let rankStrArray = [];
+                let total = 0;
+                for (let rank in summaryMap[unit]) {
+                    const count = summaryMap[unit][rank];
+                    rankStrArray.push(`${rank}: ${count} জন`);
+                    total += count;
+                }
+
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-2 border font-semibold">${unit}</td>
+                        <td class="p-2 border">${rankStrArray.join(', ')}</td>
+                        <td class="p-2 border text-center font-bold text-blue-700">${total}</td>
+                    </tr>
+                `;
+            }
+        }
+
+        function renderDeletedTable(delData) {
+            const tbody = document.getElementById('deletedTableBody');
+            tbody.innerHTML = '';
+
+            delData.forEach((item, index) => {
+                tbody.innerHTML += `
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-2 border text-center">${index + 1}</td>
+                        <td class="p-2 border">${item.BP_CIV}</td>
+                        <td class="p-2 border">${item.Rank || '-'}</td>
+                        <td class="p-2 border">${item.Name || '-'}</td>
+                        <td class="p-2 border">${item.Unit || '-'}</td>
+                        <td class="p-2 border">${item.DeletedAt ? new Date(item.DeletedAt).toLocaleString() : '-'}</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function openAddDataModal() {
+            document.getElementById('adminAddForm').reset();
+            openModal('addDataModal');
+        }
+
+        async function submitAddData(e) {
+            e.preventDefault();
+            const bpciv = document.getElementById('addBp').value.trim();
+            const rank = document.getElementById('addRank').value;
+            const brashNo = document.getElementById('addBrash').value.trim();
+            const name = document.getElementById('addName').value.trim();
+            const unit = document.getElementById('addUnit').value;
+            const mobile = document.getElementById('addMobile').value.trim();
+            const email = document.getElementById('addEmail').value.trim();
+            const remark = document.getElementById('addRemark').value.trim();
+
+            showLoading();
+            try {
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        action: 'saveAllData',
+                        bpciv, rank, brashNo, name, unit, mobile, email, remark
+                    })
+                });
+                const result = await res.json();
+                hideLoading();
+
+                if (result.success) {
+                    alert(result.message);
+                    closeModal('addDataModal');
+                    loadAdminData();
+                }
+            } catch (err) {
+                hideLoading();
+                alert("ডাটা সংরক্ষণ ব্যর্থ হয়েছে!");
+            }
+        }
+
+        async function deleteRecord(sheetName, bpciv) {
+            if (!confirm(`আপনি কি নিশ্চিত যে ${bpciv} এর তথ্যটি ডিলিট করতে চান?`)) return;
+
+            showLoading();
+            try {
+                const res = await fetch(APPS_SCRIPT_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action: 'deleteData', sheetName, bpciv })
+                });
+                const result = await res.json();
+                hideLoading();
+
+                if (result.success) {
+                    alert(result.message);
+                    loadAdminData();
+                } else {
+                    alert(result.message);
+                }
+            } catch (e) {
+                hideLoading();
+                alert("ডিলিট করতে সমস্যা হয়েছে!");
+            }
+        }
+
+        function exportToExcel(tableId, fileName) {
+            const table = document.getElementById(tableId);
+            const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+            XLSX.writeFile(wb, `${fileName}.xlsx`);
+        }
+    </script>
+</body>
+</html>
