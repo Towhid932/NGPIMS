@@ -230,7 +230,7 @@
             <form id="appEntryForm" onsubmit="submitApplication(event)" class="space-y-3 text-xs">
                 <div>
                     <label class="block font-semibold mb-1">BP/CIV নম্বর <span class="text-red-500">*</span></label>
-                    <input type="text" id="formBp" oninput="checkAndAutoFillBP(this.value)" required placeholder="BP... বা CIV..." class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500">
+                    <input type="text" id="formBp" oninput="checkAndAutoFillBP(this.value)" required placeholder="BP9818229955 বা CIV9312456687" class="w-full p-2 border rounded outline-none focus:ring-1 focus:ring-blue-500">
                 </div>
                 <div class="grid grid-cols-2 gap-2">
                     <div>
@@ -243,8 +243,8 @@
                     </div>
                 </div>
                 <div>
-                    <label class="block font-semibold mb-1">ব্রাশ নং (ঐচ্ছিক)</label>
-                    <input type="text" id="formBrash" class="w-full p-2 border rounded">
+                    <label class="block font-semibold mb-1">ব্রাশ নং (যাদের প্রযোজ্য)</label>
+                    <input type="tel" maxlength="4" id="formBrash" class="w-full p-2 border rounded">
                 </div>
                 <div>
                     <label class="block font-semibold mb-1">ইউনিট সিলেক্ট করুন <span class="text-red-500">*</span></label>
@@ -256,7 +256,7 @@
                 <div class="grid grid-cols-2 gap-2">
                     <div>
                         <label class="block font-semibold mb-1">নতুন মোবাইল নম্বর</label>
-                        <input type="text" id="formMobile" class="w-full p-2 border rounded">
+                        <input type="tel" maxlength="11" id="formMobile" class="w-full p-2 border rounded">
                     </div>
                     <div>
                         <label class="block font-semibold mb-1">নতুন ই-মেইল</label>
