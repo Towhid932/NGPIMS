@@ -12,10 +12,28 @@
     <link href="https://fonts.maateen.me/solaiman-lipi/font.css" rel="stylesheet">
     <style>
         body { font-family: 'SolaimanLipi', sans-serif; }
+        
+        /* প্রিন্ট স্টাইল ফিক্স */
         @media print {
-            body * { visibility: hidden; }
-            #printArea, #printArea * { visibility: visible; }
-            #printArea { position: absolute; left: 0; top: 0; width: 100%; }
+            body {
+                background: white !important;
+                color: black !important;
+            }
+            header, main, #loginModal, #appFormModal, #addDataModal, #searchPopup, #loadingSpinner {
+                display: none !important;
+            }
+            #printArea {
+                display: block !important;
+                position: absolute !important;
+                left: 0 !important;
+                top: 0 !important;
+                width: 100% !important;
+                margin: 0 !important;
+                padding: 0 !important;
+            }
+            #printArea * {
+                visibility: visible !important;
+            }
             @page {
                 size: A4;
                 margin-left: 1in;
@@ -433,7 +451,10 @@
 
                 if (result.success && result.data) {
                     renderPrintDocument(result.data);
-                    window.print();
+                    // প্রিন্ট উইন্ডো ট্রিগার করার আগে সামান্য বিরতি দিয়ে রেন্ডার নিশ্চিত করা
+                    setTimeout(() => {
+                        window.print();
+                    }, 200);
                 } else {
                     alert("আবেদন ডাটাবেজে এই BP/CIV এর কোনো আবেদন পাওয়া যায়নি!");
                 }
@@ -450,49 +471,49 @@
             const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.toLocaleTimeString()}`;
 
             const html = `
-                <div class="text-black text-sm leading-relaxed">
+                <div style="font-family: 'SolaimanLipi', sans-serif; color: black; font-size: 14px; line-height: 1.6; padding: 20px;">
                     <p>বরাবর</p>
                     <p style="padding-left: 0.5in;">পুলিশ সুপার</p>
                     <p style="padding-left: 0.5in;">বান্দরবান পার্বত্য জেলা।</p>
-                    <p class="mt-2">মাধ্যমঃ যথাযথ কর্তৃপক্ষ।</p>
-                    <p class="mt-2 font-bold">বিষয়ঃ NGPIMS এ মোবাইল নম্বর ও ই-মেইল সংশোধন প্রসঙ্গে।</p>
-                    <p class="mt-1">সুত্রঃ রিজার্ভ অফিস, বান্দরবান এর স্মারক নং-৪৪৪/আরও, তারিখ-০২/১১/২০২৬খ্রি.।</p>
+                    <p style="margin-top: 10px;">মাধ্যমঃ যথাযথ কর্তৃপক্ষ।</p>
+                    <p style="margin-top: 10px; font-weight: bold;">বিষয়ঃ NGPIMS এ মোবাইল নম্বর ও ই-মেইল সংশোধন প্রসঙ্গে।</p>
+                    <p style="margin-top: 5px;">সুত্রঃ রিজার্ভ অফিস, বান্দরবান এর স্মারক নং-৪৪৪/আরও, তারিখ-০২/১১/২০২৬খ্রি.।</p>
                     
-                    <p class="mt-4">জনাব</p>
-                    <p style="text-indent: 0.5in;" class="mt-1 text-justify">
+                    <p style="margin-top: 15px;">জনাব</p>
+                    <p style="text-indent: 0.5in; margin-top: 5px; text-align: justify;">
                         যথাবিহীত সম্মানপূর্বক বিনীত নিবেদন এই যে, আমি ${data.Rank}/${data.BrashNo || ''} ${data.Name}, ${data.BP_CIV} আপনার অধীনস্থ একজন ${identityType}। বর্তমানে ${data.Unit}, বান্দরবান পার্বত্য জেলায় কর্মরত আছি। NGPIMS ডাটা বেইজ এ আমার মোবাইল নম্বর ও ই-মেইল ভূল/এন্ট্রি না থাকায় প্রশাসনিক জঠিলতা সৃষ্টি হচ্ছে। এমতাবস্থায়, আমার নিম্নে বর্ণিত তথ্যগুলো NGPIMS ডাটা বেইজ এ সঠিকভাবে না থাকায় আপডেটে করা একান্ত প্রয়োজন।
                     </p>
                     
-                    <p style="text-indent: 0.5in;" class="mt-3 text-justify">
+                    <p style="text-indent: 0.5in; margin-top: 10px; text-align: justify;">
                         অতএব মহোদয়ের নিকট অাকুল আবেদন আমার নিম্নেবর্ণিত তথ্যগুলো NGPIMS ডাটা বেইজ এ আপডেট করার প্রয়োজনীয় ব্যবস্থা গ্রহণের জন্য আপনার সদয় মর্জি কামনা করছি।
                     </p>
 
-                    <table class="w-full border-collapse border border-black my-4 text-xs text-center">
+                    <table style="width: 100%; border-collapse: collapse; border: 1px solid black; margin-top: 20px; margin-bottom: 20px; font-size: 12px; text-align: center;">
                         <thead>
-                            <tr class="border-b border-black bg-gray-50">
-                                <th class="border border-black p-1">ক্রমিক</th>
-                                <th class="border border-black p-1">Rank / Brash No, নাম ও বিপি/সিআইডি</th>
-                                <th class="border border-black p-1">ইউনিটের নাম</th>
-                                <th class="border border-black p-1">ই-মেইল</th>
-                                <th class="border border-black p-1">মোবাইল নম্বর</th>
-                                <th class="border border-black p-1">মন্তব্য</th>
+                            <tr style="background-color: #f9f9f9;">
+                                <th style="border: 1px solid black; padding: 6px;">ক্রমিক</th>
+                                <th style="border: 1px solid black; padding: 6px;">Rank / Brash No, নাম ও বিপি/সিআইডি</th>
+                                <th style="border: 1px solid black; padding: 6px;">ইউনিটের নাম</th>
+                                <th style="border: 1px solid black; padding: 6px;">ই-মেইল</th>
+                                <th style="border: 1px solid black; padding: 6px;">মোবাইল নম্বর</th>
+                                <th style="border: 1px solid black; padding: 6px;">মন্তব্য</th>
                             </tr>
                         </thead>
                         <tbody>
                             <tr>
-                                <td class="border border-black p-1">১</td>
-                                <td class="border border-black p-1">${data.Rank}/${data.BrashNo || ''}, ${data.Name}, ${data.BP_CIV}</td>
-                                <td class="border border-black p-1">${data.Unit}</td>
-                                <td class="border border-black p-1">${data.NewEmail || '-'}</td>
-                                <td class="border border-black p-1">${data.NewMobile || '-'}</td>
-                                <td class="border border-black p-1">${data.Remark || '-'}</td>
+                                <td style="border: 1px solid black; padding: 6px;">১</td>
+                                <td style="border: 1px solid black; padding: 6px;">${data.Rank}/${data.BrashNo || ''}, ${data.Name}, ${data.BP_CIV}</td>
+                                <td style="border: 1px solid black; padding: 6px;">${data.Unit}</td>
+                                <td style="border: 1px solid black; padding: 6px;">${data.NewEmail || '-'}</td>
+                                <td style="border: 1px solid black; padding: 6px;">${data.NewMobile || '-'}</td>
+                                <td style="border: 1px solid black; padding: 6px;">${data.Remark || '-'}</td>
                             </tr>
                         </tbody>
                     </table>
 
-                    <div class="mt-12 flex justify-end">
-                        <div class="text-center">
-                            <p class="mb-4">স্বাক্ষর</p>
+                    <div style="margin-top: 50px; display: flex; justify-content: flex-end;">
+                        <div style="text-align: center; min-width: 200px;">
+                            <p style="margin-bottom: 30px;">স্বাক্ষর</p>
                             <p>(${data.Name})</p>
                             <p>${data.BP_CIV}</p>
                             <p>${data.Rank}/${data.BrashNo || ''}</p>
@@ -500,7 +521,7 @@
                         </div>
                     </div>
 
-                    <div class="mt-8 border-t pt-1 flex justify-between text-[10px] text-gray-600">
+                    <div style="margin-top: 40px; border-top: 1px solid #ccc; padding-top: 5px; display: flex; justify-content: space-between; font-size: 10px; color: #555;">
                         <span>প্রিন্টের তারিখ ও সময়: ${dateStr}</span>
                         <span>Dev. by T261</span>
                     </div>
