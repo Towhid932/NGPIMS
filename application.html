@@ -80,6 +80,17 @@
                 </button>
             </div>
             <p id="bpValidationError" class="text-red-500 text-xs mt-1 hidden font-semibold"></p>
+
+            <!-- সাধারণ নির্দেশনা বক্স -->
+            <div class="mt-4 p-3 bg-blue-50 border border-blue-200 rounded text-xs text-blue-900">
+                <p class="font-bold mb-1 flex items-center gap-1">📌 সাধারণ নির্দেশনা:</p>
+                <ul class="list-disc list-inside space-y-1 text-gray-700 leading-relaxed">
+                    <li>আপনার বর্তমান তথ্য যাচাই করতে সঠিক BP/CIV নম্বর লিখে <span class="font-semibold text-blue-600">🔍 সার্চ</span> করুন।</li>
+                    <li>NGPIMS ডাটাবেজে মোবাইল নম্বর বা ই-মেইল সংশোধনের জন্য <span class="font-semibold text-indigo-600">📝 আবেদন ফরম</span> এ ক্লিক করে নতুন তথ্য এন্ট্রি করুন।</li>
+                    <li>পূর্বে দাখিলকৃত আবেদন প্রিন্ট করতে BP/CIV নম্বর দিয়ে <span class="font-semibold text-emerald-600">🖨️ আবেদন প্রিন্ট</span> বাটনে ক্লিক করুন।</li>
+                    <li>মোবাইল নম্বর প্রদানের সময় ১০ ডিজিট হলে (যেমন: 18XXXXXXXX) সিস্টেম স্বয়ংক্রিয়ভাবে সামনে '0' যুক্ত করে ১১ ডিজিট করে নেবে।</li>
+                </ul>
+            </div>
         </div>
 
         <!-- Admin View Tabs (Visible after Login) -->
@@ -95,11 +106,31 @@
 
             <!-- Tab Contents -->
             <div class="bg-white p-4 rounded-b-lg border border-t-0 shadow-sm">
+                
                 <!-- All Data Tab -->
                 <div id="allDataTab" class="tab-content">
                     <div class="flex justify-between items-center mb-4 flex-wrap gap-2">
                         <button onclick="openAddDataModal()" class="bg-blue-600 text-white px-3 py-1.5 rounded text-sm hover:bg-blue-700">+ নতুন ডাটা এড</button>
                         <button onclick="exportToExcel('allDataTable', 'All_Database')" class="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:bg-green-700">📥 Excel ডাউনলোড</button>
+                    </div>
+                    <!-- Filter & Search Bar for All Data -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 bg-gray-50 p-3 rounded border text-xs">
+                        <div>
+                            <label class="block font-semibold mb-1">ইউনিট ফিল্টার</label>
+                            <select id="filterAllUnit" onchange="filterAllDataTable()" class="w-full p-2 border rounded bg-white">
+                                <option value="">সকল ইউনিট</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold mb-1">পদবি (Rank) ফিল্টার</label>
+                            <select id="filterAllRank" onchange="filterAllDataTable()" class="w-full p-2 border rounded bg-white">
+                                <option value="">সকল পদবি</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold mb-1">নাম, BP বা মোবাইল দিয়ে খুঁজুন</label>
+                            <input type="text" id="searchAllText" oninput="filterAllDataTable()" placeholder="সার্চ করুন..." class="w-full p-2 border rounded bg-white">
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table id="allDataTable" class="w-full text-xs text-left border-collapse">
@@ -126,6 +157,25 @@
                 <div id="appDataTab" class="tab-content hidden">
                     <div class="flex justify-end mb-4">
                         <button onclick="exportToExcel('appDataTable', 'Applications')" class="bg-green-600 text-white px-3 py-1.5 rounded text-sm hover:bg-green-700">📥 Excel ডাউনলোড</button>
+                    </div>
+                    <!-- Filter & Search Bar for Applications -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 bg-gray-50 p-3 rounded border text-xs">
+                        <div>
+                            <label class="block font-semibold mb-1">ইউনিট ফিল্টার</label>
+                            <select id="filterAppUnit" onchange="filterAppDataTable()" class="w-full p-2 border rounded bg-white">
+                                <option value="">সকল ইউনিট</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold mb-1">পদবি (Rank) ফিল্টার</label>
+                            <select id="filterAppRank" onchange="filterAppDataTable()" class="w-full p-2 border rounded bg-white">
+                                <option value="">সকল পদবি</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold mb-1">নাম, BP বা মোবাইল দিয়ে খুঁজুন</label>
+                            <input type="text" id="searchAppText" oninput="filterAppDataTable()" placeholder="সার্চ করুন..." class="w-full p-2 border rounded bg-white">
+                        </div>
                     </div>
                     <div class="overflow-x-auto">
                         <table id="appDataTable" class="w-full text-xs text-left border-collapse">
@@ -341,7 +391,7 @@
     <!-- JavaScript logic -->
     <script>
         // ⚠️ আপনার Apps Script Web App URL এখানে বসান
-        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwGJ4-oO8fdnTurrlAkQCF8YlqPj633dsdHgj6V4ae2UQPh7XlN788QFow7R2W7ayLdtg/exec";
+        const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwXKA_ZTp8KYo81moiDRVc6j4YhvnArc5V0o2HQPX2E7sSYaORW-zqGyvAkcijJ_M3jLw/exec";
 
         const UNITS = [
             "সদর থানা", "রুমা থানা", "রোয়াংছড়ি থানা", "নাইক্ষ্যংছড়ি থানা", "আলীকদম থানা", "থানচি থানা", "লামা থানা", 
@@ -364,6 +414,7 @@
 
         let currentUser = null;
         let cachedAllData = [];
+        let cachedAppData = [];
 
         window.onload = function() {
             populateDropdowns();
@@ -374,10 +425,25 @@
         function openModal(id) { document.getElementById(id).classList.remove('hidden'); }
         function closeModal(id) { document.getElementById(id).classList.add('hidden'); }
 
+        // মোবাইল নম্বর ফরম্যাট ভ্যালিডেশন (১০ ডিজিট ও শুরু ১ হলে সামনে ০ বসবে)
+        function formatMobile(mobile) {
+            if (!mobile) return '';
+            mobile = String(mobile).trim();
+            if (mobile.length === 10 && mobile.startsWith('1')) {
+                return '0' + mobile;
+            }
+            return mobile;
+        }
+
         function populateDropdowns() {
             const unitSelect = document.getElementById('formUnitSelect');
             const addUnit = document.getElementById('addUnit');
             const addRank = document.getElementById('addRank');
+            
+            const filterAllUnit = document.getElementById('filterAllUnit');
+            const filterAppUnit = document.getElementById('filterAppUnit');
+            const filterAllRank = document.getElementById('filterAllRank');
+            const filterAppRank = document.getElementById('filterAppRank');
 
             unitSelect.innerHTML = '<option value="">-- সিলেক্ট করুন --</option>';
             addUnit.innerHTML = '<option value="">-- সিলেক্ট করুন --</option>';
@@ -386,10 +452,14 @@
             UNITS.forEach(u => {
                 unitSelect.innerHTML += `<option value="${u}">${u}</option>`;
                 addUnit.innerHTML += `<option value="${u}">${u}</option>`;
+                filterAllUnit.innerHTML += `<option value="${u}">${u}</option>`;
+                filterAppUnit.innerHTML += `<option value="${u}">${u}</option>`;
             });
 
             RANKS.forEach(r => {
                 addRank.innerHTML += `<option value="${r}">${r}</option>`;
+                filterAllRank.innerHTML += `<option value="${r}">${r}</option>`;
+                filterAppRank.innerHTML += `<option value="${r}">${r}</option>`;
             });
         }
 
@@ -419,11 +489,13 @@
 
                 if (result.success && result.data) {
                     const d = result.data;
+                    const formattedMobile = formatMobile(d.Mobile);
                     document.getElementById('searchPopupContent').innerHTML = `
                         <p><strong>Rank:</strong> ${d.Rank || '-'}</p>
                         <p><strong>ব্রাশ নং:</strong> ${d.BrashNo || '-'}</p>
                         <p><strong>নাম:</strong> ${d.Name || '-'}</p>
-                        <p><strong>মোবাইল নম্বর:</strong> ${d.Mobile || '-'}</p>
+                        <p><strong>ইউনিট:</strong> ${d.Unit || '-'}</p>
+                        <p><strong>মোবাইল নম্বর:</strong> ${formattedMobile || '-'}</p>
                         <p><strong>ই-মেইল:</strong> ${d.Email || '-'}</p>
                     `;
                     openModal('searchPopup');
@@ -451,7 +523,6 @@
 
                 if (result.success && result.data) {
                     renderPrintDocument(result.data);
-                    // প্রিন্ট উইন্ডো ট্রিগার করার আগে সামান্য বিরতি দিয়ে রেন্ডার নিশ্চিত করা
                     setTimeout(() => {
                         window.print();
                     }, 200);
@@ -469,6 +540,8 @@
             const identityType = isPolice ? "পুলিশ সদস্য" : "নন-পুলিশ সদস্যা";
             const now = new Date();
             const dateStr = `${now.getDate()}/${now.getMonth()+1}/${now.getFullYear()} ${now.toLocaleTimeString()}`;
+
+            const formattedNewMobile = formatMobile(data.NewMobile);
 
             const html = `
                 <div style="font-family: 'SolaimanLipi', sans-serif; color: black; font-size: 14px; line-height: 1.6; padding: 20px;">
@@ -492,7 +565,7 @@
                         <thead>
                             <tr style="background-color: #f9f9f9;">
                                 <th style="border: 1px solid black; padding: 6px;">ক্রমিক</th>
-                                <th style="border: 1px solid black; padding: 6px;">পদবিসহ নাম ও বিপি/সিআইডি</th>
+                                <th text-align: center;="border: 1px solid black; padding: 6px;">পদবিসহ নাম ও বিপি/সিআইডি</th>
                                 <th style="border: 1px solid black; padding: 6px;">ইউনিটের নাম</th>
                                 <th style="border: 1px solid black; padding: 6px;">ই-মেইল</th>
                                 <th style="border: 1px solid black; padding: 6px;">মোবাইল নম্বর</th>
@@ -502,10 +575,10 @@
                         <tbody>
                             <tr>
                                 <td style="border: 1px solid black; padding: 6px;">১</td>
-                                <td style="border: 1px solid black; padding: 6px;">${data.Rank}/${data.BrashNo || ''}, ${data.Name}, ${data.BP_CIV}</td>
+                                <td style="border: 1px solid black; text-align: left; padding: 6px;">${data.Rank}/${data.BrashNo || ''} ${data.Name}, ${data.BP_CIV}</td>
                                 <td style="border: 1px solid black; padding: 6px;">${data.Unit}</td>
                                 <td style="border: 1px solid black; padding: 6px;">${data.NewEmail || '-'}</td>
-                                <td style="border: 1px solid black; padding: 6px;">${data.NewMobile || '-'}</td>
+                                <td style="border: 1px solid black; padding: 6px;">${formattedNewMobile || '-'}</td>
                                 <td style="border: 1px solid black; padding: 6px;">${data.Remark || '-'}</td>
                             </tr>
                         </tbody>
@@ -572,7 +645,10 @@
             const brashNo = document.getElementById('formBrash').value.trim();
             let unit = document.getElementById('formUnitSelect').value;
             if (unit === "অন্যান্য") unit = document.getElementById('formUnitOther').value.trim();
-            const newMobile = document.getElementById('formMobile').value.trim();
+            
+            let newMobile = document.getElementById('formMobile').value.trim();
+            newMobile = formatMobile(newMobile);
+
             const newEmail = document.getElementById('formEmail').value.trim();
             const remark = document.getElementById('formRemark').value.trim();
 
@@ -667,8 +743,10 @@
                 hideLoading();
 
                 cachedAllData = allRes;
-                renderAllDataTable(allRes, appRes);
-                renderAppDataTable(appRes);
+                cachedAppData = appRes;
+
+                filterAllDataTable();
+                filterAppDataTable();
                 renderSummaryTable(appRes);
                 renderDeletedTable(delRes);
 
@@ -678,16 +756,42 @@
             }
         }
 
-        function renderAllDataTable(allData, appData) {
+        function filterAllDataTable() {
+            const unitVal = document.getElementById('filterAllUnit').value;
+            const rankVal = document.getElementById('filterAllRank').value;
+            const textVal = document.getElementById('searchAllText').value.toLowerCase().trim();
+
+            const filtered = cachedAllData.filter(item => {
+                const matchUnit = !unitVal || item.Unit === unitVal;
+                const matchRank = !rankVal || item.Rank === rankVal;
+                const matchText = !textVal || 
+                    String(item.Name || '').toLowerCase().includes(textVal) ||
+                    String(item.BP_CIV || '').toLowerCase().includes(textVal) ||
+                    String(item.Mobile || '').toLowerCase().includes(textVal);
+
+                return matchUnit && matchRank && matchText;
+            });
+
+            renderAllDataTableBody(filtered, cachedAppData);
+        }
+
+        function renderAllDataTableBody(allData, appData) {
             const appBpSet = new Set(appData.map(a => String(a.BP_CIV).trim()));
             const tbody = document.getElementById('allDataTableBody');
             tbody.innerHTML = '';
+
+            if (allData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="10" class="p-4 text-center text-gray-500">কোনো তথ্য পাওয়া যায়নি</td></tr>`;
+                return;
+            }
 
             allData.forEach((item, index) => {
                 const hasApp = appBpSet.has(String(item.BP_CIV).trim());
                 const statusBadge = hasApp 
                     ? `<span class="bg-green-100 text-green-800 text-[10px] px-2 py-0.5 rounded font-bold">আবেদন দাখিল</span>` 
                     : `<span class="bg-yellow-100 text-yellow-800 text-[10px] px-2 py-0.5 rounded">পেন্ডিং</span>`;
+
+                const formattedMobile = formatMobile(item.Mobile);
 
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-gray-50">
@@ -697,7 +801,7 @@
                         <td class="p-2 border">${item.BrashNo || '-'}</td>
                         <td class="p-2 border">${item.Name || '-'}</td>
                         <td class="p-2 border">${item.Unit || '-'}</td>
-                        <td class="p-2 border">${item.Mobile || '-'}</td>
+                        <td class="p-2 border">${formattedMobile || '-'}</td>
                         <td class="p-2 border">${item.Email || '-'}</td>
                         <td class="p-2 border text-center">${statusBadge}</td>
                         <td class="p-2 border text-center">
@@ -708,11 +812,37 @@
             });
         }
 
-        function renderAppDataTable(appData) {
+        function filterAppDataTable() {
+            const unitVal = document.getElementById('filterAppUnit').value;
+            const rankVal = document.getElementById('filterAppRank').value;
+            const textVal = document.getElementById('searchAppText').value.toLowerCase().trim();
+
+            const filtered = cachedAppData.filter(item => {
+                const matchUnit = !unitVal || item.Unit === unitVal;
+                const matchRank = !rankVal || item.Rank === rankVal;
+                const matchText = !textVal || 
+                    String(item.Name || '').toLowerCase().includes(textVal) ||
+                    String(item.BP_CIV || '').toLowerCase().includes(textVal) ||
+                    String(item.NewMobile || '').toLowerCase().includes(textVal);
+
+                return matchUnit && matchRank && matchText;
+            });
+
+            renderAppDataTableBody(filtered);
+        }
+
+        function renderAppDataTableBody(appData) {
             const tbody = document.getElementById('appDataTableBody');
             tbody.innerHTML = '';
 
+            if (appData.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="9" class="p-4 text-center text-gray-500">কোনো আবেদন পাওয়া যায়নি</td></tr>`;
+                return;
+            }
+
             appData.forEach((item, index) => {
+                const formattedNewMobile = formatMobile(item.NewMobile);
+
                 tbody.innerHTML += `
                     <tr class="border-b hover:bg-gray-50">
                         <td class="p-2 border text-center">${index + 1}</td>
@@ -720,7 +850,7 @@
                         <td class="p-2 border">${item.Rank}/${item.BrashNo || ''}</td>
                         <td class="p-2 border">${item.Name}</td>
                         <td class="p-2 border">${item.Unit}</td>
-                        <td class="p-2 border">${item.NewMobile || '-'}</td>
+                        <td class="p-2 border">${formattedNewMobile || '-'}</td>
                         <td class="p-2 border">${item.NewEmail || '-'}</td>
                         <td class="p-2 border">${item.Remark || '-'}</td>
                         <td class="p-2 border text-center">
@@ -793,7 +923,10 @@
             const brashNo = document.getElementById('addBrash').value.trim();
             const name = document.getElementById('addName').value.trim();
             const unit = document.getElementById('addUnit').value;
-            const mobile = document.getElementById('addMobile').value.trim();
+            
+            let mobile = document.getElementById('addMobile').value.trim();
+            mobile = formatMobile(mobile);
+
             const email = document.getElementById('addEmail').value.trim();
             const remark = document.getElementById('addRemark').value.trim();
 
