@@ -9,7 +9,6 @@
     <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- SheetJS (Excel Export) -->
-    <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
     <style>
@@ -19,7 +18,7 @@
             background-color: #f1f5f9;
         }
 
-        /* Hide scrollbars for slick horizontal tab scrolling */
+        /* Hide scrollbars for horizontal tab scrolling */
         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
@@ -47,7 +46,6 @@
                 background: #fff !important;
                 color: #000 !important;
             }
-            /* Ensures footer stays at the bottom of printed page */
             .print-footer {
                 position: fixed;
                 bottom: 0;
@@ -119,28 +117,30 @@
     <!-- MAIN CONTAINER -->
     <main class="max-w-7xl mx-auto px-2 sm:px-4 py-6 flex-grow w-full">
 
-        <!-- AUTH SECTION (LOGIN & REGISTRATION SWITCHABLE) -->
+        <!-- AUTH SECTION -->
         <div id="authSection" class="max-w-4xl mx-auto">
             
-            <!-- LOGIN VIEW (Default) -->
+            <!-- LOGIN VIEW -->
             <div id="loginViewCard" class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
-                <div class="bg-gradient-to-r from-slate-800 to-gray-900 text-white p-4 sm:p-6 flex justify-between items-center">
+                <div class="bg-gradient-to-r from-slate-800 to-gray-900 text-white p-4 sm:p-6 flex flex-wrap justify-between items-center gap-2">
                     <div>
                         <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-right-to-bracket text-yellow-400"></i> সিস্টেম লগইন</h2>
                         <p class="text-xs text-gray-300 mt-1">আপনার বিপি ও পাসওয়ার্ড প্রদান করে লগইন করুন</p>
                     </div>
-                    <button onclick="switchAuthView('register')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-user-plus"></i> নতুন ইউনিট রেজিস্ট্রেশন
-                    </button>
-                    <button  class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
-                        <a href=application.html>🔍 সার্চ ও 📝 আবেদন ফরম</a>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="switchAuthView('register')" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-user-plus"></i> নতুন ইউনিট রেজিস্ট্রেশন
+                        </button>
+                        <a href="application.html" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
+                            🔍 সার্চ ও 📝 আবেদন ফরম
+                        </a>
+                    </div>
                 </div>
                 <form id="loginForm" onsubmit="handleLogin(event)" class="p-4 sm:p-6 space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি নম্বর <span class="text-red-500">*</span></label>
-                            <input type="text" id="loginBP" placeholder=" BP9920229900" maxlength="12" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <input type="text" id="loginBP" placeholder="BP9920229900" maxlength="13" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">পাসওয়ার্ড <span class="text-red-500">*</span></label>
@@ -148,37 +148,33 @@
                         </div>
                     </div>
                     <button type="submit" class="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-3 rounded-lg shadow-md transition text-center flex items-center justify-center gap-2">
-    <i class="fa-solid fa-lock-open"></i> লগইন করুন
-</button>
+                        <i class="fa-solid fa-lock-open"></i> লগইন করুন
+                    </button>
 
                     <div class="bg-blue-50 border-l-4 border-blue-600 p-4 rounded-r-lg space-y-1 text-xs text-blue-900 font-medium">
                         <p class="font-bold text-sm text-blue-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-circle-info"></i> গুরুত্বপূর্ণ নির্দেশাবলী:</p>
                         <p>১. ইউনিটে কর্মরত সকল পুলিশ সদস্যদের তথ্য 🔍 সার্চ ও 📝 আবেদন ফরম বাটনে ক্লিক করে যাচাই করতে হবে।</p>
-                        <p>২. যাদের মোবাইল নম্বর বা ই-মেইল নাই বা ভূল আছে পরিবর্তন করতে হবে তারা আগে অনলাইনে আবেদন দাখিল করবে। তাদের তথ্যাদি এন্ট্রি দিতে হবে।</p>
+                        <p>২. যাদের মোবাইল নম্বর বা ই-মেইল নাই বা ভূল আছে পরিবর্তন করতে হবে তারা আগে অনলাইনে আবেদন দাখিল করবে।</p>
                         <p>৩. পরে পুলিশ সদস্যদের মোবাইল নম্বর ও ই-মেইল পরিবর্তন করা যাবে না।</p>
                         <p>৪. পরবর্তীতে ভূল পরিলক্ষিত হলে বর্ণিত পুলিশ সদস্য, নিজ ইউনিট ইনচার্জ ও মুন্সি/অপারেটরদের উপর দায় বর্তায়বে।</p>
-                        <p>৫. সকল পুলিশ সদস্যদের রুল কলের মাধ্যমে অবহিত করতে হবে।</p>
-                        <p>৬. বিপি নম্বরের নমুনা হচ্ছে <strong>BP9920229900</strong> মাঝখানে স্পেস বা চিহ্ন হবে না, বড় অক্ষরে BP লিখতে হবে।</p>
-                        <p class="text-red-600 font-bold">৭. কারো তথ্য ভূল এন্ট্রি হলে ০১৬৪১৬৬৩৫৯৬ এ যোগাযোগ করতে হবে।</p>
+                        <p>৫. বিপি নম্বরের নমুনা হচ্ছে <strong>BP9920229900</strong> অথবা সিভিলদের ক্ষেত্রে <strong>CIV</strong> সহ ১৩ ডিজিট।</p>
+                        <p class="text-red-600 font-bold">৬. কারো তথ্য ভূল এন্ট্রি হলে ০১৬৪১৬৬৩৫৯৬ এ যোগাযোগ করতে হবে।</p>
                     </div>
-
-                    
                 </form>
             </div>
 
-            <!-- REGISTRATION VIEW (Hidden by Default) -->
+            <!-- REGISTRATION VIEW -->
             <div id="registerViewCard" class="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden hidden">
-                <div class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white p-4 sm:p-6 flex justify-between items-center">
+                <div class="bg-gradient-to-r from-blue-800 to-indigo-900 text-white p-4 sm:p-6 flex flex-wrap justify-between items-center gap-2">
                     <div>
                         <h2 class="text-xl font-bold flex items-center gap-2"><i class="fa-solid fa-user-plus text-yellow-400"></i> ইউনিট প্রধান আইডি রেজিস্ট্রেশন ফরম</h2>
                         <p class="text-xs text-blue-200 mt-1">রেজিস্ট্রেশনের জন্য সঠিক তথ্য প্রদান করুন</p>
                     </div>
-                    <button onclick="switchAuthView('login')" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
-                        <i class="fa-solid fa-arrow-left"></i> লগইন পেজে ফিরে যান
-                    </button>
-                    <button  class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
-                        <a href=application.html>🔍 সার্চ ও 📝 আবেদন ফরম</a>
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <button onclick="switchAuthView('login')" class="bg-slate-700 hover:bg-slate-800 text-white px-3 py-2 rounded-lg text-xs font-semibold shadow transition flex items-center gap-1.5">
+                            <i class="fa-solid fa-arrow-left"></i> লগইন পেজে ফিরে যান
+                        </button>
+                    </div>
                 </div>
                 <form id="registrationForm" onsubmit="handleRegistration(event)" class="p-4 sm:p-6 space-y-4">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -202,8 +198,8 @@
                             </select>
                         </div>
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি (BP সহ ১২ ডিজিট) <span class="text-red-500">*</span></label>
-                            <input type="text" id="regBP" placeholder="BP9920229900" maxlength="12" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি (BP সহ ১২ বা CIV সহ ১৩ ডিজিট) <span class="text-red-500">*</span></label>
+                            <input type="text" id="regBP" placeholder="BP9920229900" maxlength="13" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">ইউনিট প্রধানের নাম <span class="text-red-500">*</span></label>
@@ -215,36 +211,23 @@
                         </div>
                     </div>
                     <button type="submit" class="w-full bg-blue-800 hover:bg-blue-900 text-white font-bold py-3 rounded-lg shadow-md transition text-center flex items-center justify-center gap-2">
-    <i class="fa-solid fa-user-check"></i> আইডি রেজিস্ট্রেশন করুন
-</button>
-
-                    <div class="bg-amber-50 border-l-4 border-amber-500 p-4 rounded-r-lg space-y-1 text-xs text-amber-900 font-medium">
-                        <p class="font-bold text-sm text-amber-800 mb-1 flex items-center gap-1"><i class="fa-solid fa-triangle-exclamation"></i> রেজিস্ট্রেশন নির্দেশাবলী:</p>
-                        <p>১. প্রতিটি ইউনিট হতে ইউনিট প্রধানের বিপি ও অন্যান্য তথ্য দিয়ে আইডি রেজিস্ট্রেশন করতে হবে।</p>
-                        <p>২. একই ইউনিটে একাধিক আইডি রেজিস্ট্রেশন করা যাবে না।</p>
-                        <p>৩. প্রতিটি ইউনিট হতে ফরওয়ার্ডিং প্রিন্ট করে স্মারকসহ রিজার্ভ অফিসে প্রেরণ করতে হবে।</p>
-                        <p>৪. ইউনিট প্রধান ব্যাতিত অন্য কারো লগইন বা রেজিস্ট্রেশন করবেন না।</p>
-                        <p>৫. যাদের NGPIMS এ মোবাইল নম্বর ও ই-মেইল সঠিক আছে তাদের আবেদন বা তথ্যাদি রিজার্ভ অফিসে প্রেরণ করতে হবে না।</p>
-                        <p>৬. যে সকল ইউনিটে কোন সদস্যদের মোবাইল নম্বর ও ই-মেইল এ সমস্যা নাই <br>সে সকল ইউনিট হতে ফরওয়ার্ডিং প্রিন্ট করে স্মারকসহ রিজার্ভ অফিসে প্রেরণ করতে হবে।</p>
-                    </div>
-
-                    
+                        <i class="fa-solid fa-user-check"></i> আইডি রেজিস্ট্রেশন করুন
+                    </button>
                 </form>
             </div>
-
         </div>
 
-        <!-- DASHBOARD CONTAINER (HIDDEN UNTIL LOGGED IN) -->
+        <!-- DASHBOARD CONTAINER -->
         <div id="dashboardSection" class="hidden space-y-6">
 
             <!-- Horizontal Scrollable Tabs Header -->
             <div class="bg-white rounded-xl shadow-md p-2 border border-gray-200">
                 <nav id="tabsNav" class="flex space-x-2 overflow-x-auto no-scrollbar whitespace-nowrap py-1 px-1" aria-label="Tabs">
-                    <!-- Dynamic Tabs loaded via JS based on role -->
+                    <!-- Dynamic Tabs loaded via JS -->
                 </nav>
             </div>
 
-            <!-- TAB 1: DATA ENTRY (For Users, Admins, and Developers) -->
+            <!-- TAB 1: DATA ENTRY -->
             <div id="tabEntry" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6">
                     <h3 class="text-lg font-bold text-blue-900 border-b pb-3 mb-4 flex items-center gap-2">
@@ -252,18 +235,17 @@
                     </h3>
                     <form id="dataEntryForm" onsubmit="handleDataEntry(event)" class="space-y-4">
                         
-                        <!-- Unit Selection Field for Admin / Developer (or normal user unit indicator) -->
-                        <div id="unitSelectionContainer" class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4">
+                        <div id="unitSelectionContainer" class="bg-blue-50 p-4 rounded-lg border border-blue-200 mb-4 hidden">
                             <label class="block text-sm font-bold text-blue-900 mb-1">ইউনিটের নাম সিলেক্ট করুন <span class="text-red-500">*</span></label>
-                            <select id="entryUnitSelect" required class="w-full border border-gray-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                            <select id="entryUnitSelect" class="w-full border border-gray-300 rounded-lg p-2.5 bg-white focus:ring-2 focus:ring-blue-500 focus:outline-none">
                                 <option value="">ইউনিট নির্বাচন করুন</option>
                             </select>
                         </div>
 
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <div>
-                                <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি নম্বর (১২ ডিজিট) <span class="text-red-500">*</span></label>
-                                <input type="text" id="entryBP" placeholder=" BP1234567890" maxlength="12" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি/আইডি (BP ১২ বা CIV ১৩ ডিজিট) <span class="text-red-500">*</span></label>
+                                <input type="text" id="entryBP" placeholder="BP1234567890 বা CIV..." maxlength="13" required class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">পদবি <span class="text-red-500">*</span></label>
@@ -282,17 +264,17 @@
                                     <option value="নায়েক">নায়েক</option>
                                     <option value="কনস্টেবল">কনস্টেবল</option>
                                     <option value="হিসাব রক্ষণ কর্মকর্তা">হিসাব রক্ষণ কর্মকর্তা</option>
-<option value="সাঁটলিপিকার-কাম-কম্পিউটার অপারেটর">সাঁটলিপিকার-কাম-কম্পিউটার অপারেটর</option>
-<option value="সাঁট মুদ্রাক্ষরিক">সাঁট মুদ্রাক্ষরিক</option>
-<option value="নার্সিং সহকারী">নার্সিং সহকারী</option>
-<option value="বিক্রয় সহকারী">বিক্রয় সহকারী</option>
-<option value="বাবুর্চী">বাবুর্চী</option>
-<option value="পরিচ্ছন্নতা কর্মী">পরিচ্ছন্নতা কর্মী</option>
+                                    <option value="সাঁটলিপিকার-কাম-কম্পিউটার অপারেটর">সাঁটলিপিকার-কাম-কম্পিউটার অপারেটর</option>
+                                    <option value="সাঁট মুদ্রাক্ষরিক">সাঁট মুদ্রাক্ষরিক</option>
+                                    <option value="নার্সিং সহকারী">নার্সিং সহকারী</option>
+                                    <option value="বিক্রয় সহকারী">বিক্রয় সহকারী</option>
+                                    <option value="বাবুর্চী">বাবুর্চী</option>
+                                    <option value="পরিচ্ছন্নতা কর্মী">পরিচ্ছন্নতা কর্মী</option>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">ব্রাশ নং <span class="text-xs text-gray-400">(ঐচ্ছিক)</span></label>
-                                <input type="number" id="entryBrushNo" maxlength="4" placeholder="ব্রাশ নম্বর" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="number" id="entryBrushNo" placeholder="ব্রাশ নম্বর" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">নাম <span class="text-red-500">*</span></label>
@@ -300,11 +282,11 @@
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">নতুন মোবাইল নম্বর (১১ ডিজিট)</label>
-                                <input type="tel" id="entryMobile" placeholder=" 01700000000" maxlength="11" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="tel" id="entryMobile" placeholder="01700000000" maxlength="11" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                             <div>
                                 <label class="block text-sm font-semibold text-gray-700 mb-1">নতুন ই-মেইল</label>
-                                <input type="email" id="entryEmail" placeholder=" example@gmail.com" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                                <input type="email" id="entryEmail" placeholder="example@gmail.com" class="w-full border border-gray-300 rounded-lg p-2.5 focus:ring-2 focus:ring-blue-500 focus:outline-none">
                             </div>
                         </div>
 
@@ -322,7 +304,7 @@
                 </div>
             </div>
 
-            <!-- TAB 2: USER MANPOWER DATA & FORWARDING PRINT (For Users) -->
+            <!-- TAB 2: USER MANPOWER DATA & FORWARDING PRINT -->
             <div id="tabManpower" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
@@ -358,7 +340,7 @@
                 </div>
             </div>
 
-            <!-- TAB 3: ADMIN/DEV ALL DATABASE -->
+            <!-- TAB 3: ALL DATABASE (Admin/Dev) -->
             <div id="tabAllDatabase" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
@@ -395,7 +377,7 @@
                 </div>
             </div>
 
-            <!-- TAB 4: UNIT WISE DATA (Admin/Dev) -->
+            <!-- TAB 4: UNIT WISE DATA -->
             <div id="tabUnitWise" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between items-center gap-4 border-b pb-3">
@@ -430,7 +412,7 @@
                 </div>
             </div>
 
-            <!-- TAB 5: STATISTICS (Admin/Dev) -->
+            <!-- TAB 5: STATISTICS -->
             <div id="tabStats" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
@@ -461,7 +443,7 @@
                                     <th class="p-2 border">এটিএসআই</th>
                                     <th class="p-2 border">নায়েক</th>
                                     <th class="p-2 border">কনস্টেবল</th>
-                                    <th class="p-2 border bg-blue-900">মোট</th>
+                                    <th class="p-2 border bg-blue-900 text-white">মোট</th>
                                 </tr>
                             </thead>
                             <tbody id="statsTableBody" class="bg-white divide-y divide-gray-200">
@@ -475,7 +457,7 @@
                 </div>
             </div>
 
-            <!-- TAB 6: USER MANAGEMENT (Admin/Dev) -->
+            <!-- TAB 6: USER MANAGEMENT -->
             <div id="tabUsers" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
                     <h3 class="text-lg font-bold text-blue-900 border-b pb-3">রেজিস্ট্রিকৃত ইউজার আইডি তালিকা</h3>
@@ -535,7 +517,7 @@
                 </div>
             </div>
 
-            <!-- TAB 8: SYSTEM LOGS (Developer Only) -->
+            <!-- TAB 8: SYSTEM LOGS -->
             <div id="tabLogs" class="tab-content hidden">
                 <div class="bg-white rounded-xl shadow-md border border-gray-200 p-4 sm:p-6 space-y-4">
                     <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-3">
@@ -546,9 +528,6 @@
                         <div class="flex gap-2">
                             <button onclick="exportToExcel('logsTable', 'NGPIMS_System_Logs')" class="bg-emerald-700 hover:bg-emerald-800 text-white font-bold px-3 py-1.5 rounded-lg shadow text-xs flex items-center gap-1">
                                 <i class="fa-solid fa-file-excel"></i> Excel
-                            </button>
-                            <button onclick="window.print()" class="bg-blue-800 hover:bg-blue-900 text-white font-bold px-3 py-1.5 rounded-lg shadow text-xs flex items-center gap-1">
-                                <i class="fa-solid fa-print"></i> Print
                             </button>
                         </div>
                     </div>
@@ -585,8 +564,8 @@
                     <input type="hidden" id="editRowId">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
-                            <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি (BP সহ ১২ ডিজিট)</label>
-                            <input type="text" id="editBP" required maxlength="12" class="w-full border border-gray-300 rounded-lg p-2">
+                            <label class="block text-sm font-semibold text-gray-700 mb-1">বিপি (BP ১২ বা CIV ১৩ ডিজিট)</label>
+                            <input type="text" id="editBP" required maxlength="13" class="w-full border border-gray-300 rounded-lg p-2">
                         </div>
                         <div>
                             <label class="block text-sm font-semibold text-gray-700 mb-1">পদবি</label>
@@ -676,9 +655,9 @@
             </table>
 
             <p style="text-indent: 0.5in; margin-top: 15px; text-align: justify;">
-                উল্লেখ যে, NGPIMS যাচাইপূর্বক অত্র ইউনিটে কর্মরত অন্য কোন পুলিশ/নন-পুলিশ সদস্যদের NGPIMS এ মোবাইল নম্বর ও ই-মেইল সমস্যা নেই।
+                উল্লেখ্য যে, NGPIMS যাচাইপূর্বক অত্র ইউনিটে কর্মরত অন্য কোন পুলিশ/নন-পুলিশ সদস্যদের NGPIMS এ মোবাইল নম্বর ও ই-মেইল সমস্যা নেই।
             </p>
-            <p style=" margin-top: 15px; text-align: justify;">
+            <p style="margin-top: 15px; text-align: justify;">
                 সংযুক্তঃ আবেদন.................... টি।
             </p>
 
@@ -691,7 +670,7 @@
             </div>
             <div style="clear: both;"></div>
 
-            <!-- Print Footer Info (Fixed at bottom during print) -->
+            <!-- Print Footer Info -->
             <div class="print-footer">
                 <span>প্রিন্টের তারিখ ও সময়: <span id="printDateTime"></span></span>
                 <span>Dev. by T261</span>
@@ -709,12 +688,8 @@
 
     <!-- JAVASCRIPT APP LOGIC -->
     <script>
-        // ==========================================
-        // GOOGLE APPS SCRIPT BACKEND URL
-        // ==========================================
         const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyxWpGWBrPiJ9O1eC0p-hLy7Qk7iarBm858KKyoulZT7L3r1Pt68IE3XbZMIvT2f5zH7Q/exec";
 
-        // Dynamic Options
         const UNITS_LIST = [
             "সদর থানা", "রুমা থানা", "রোয়াংছড়ি থানা", "নাইক্ষ্যংছড়ি থানা", "আলীকদম থানা", "থানচি থানা", "লামা থানা",
             "ঘুমধুম তদন্ত কেন্দ্র", "বাইশারী তদন্ত কেন্দ্র", "টংকাবতি তদন্ত কেন্দ্র", "সদর ফাঁড়ি", "বাইশারী ফাঁড়ি",
@@ -743,7 +718,6 @@
             "কনস্টেবল": 12
         };
 
-        // Application State
         let currentUser = null;
         let allUsersData = [];
         let allManpowerData = [];
@@ -751,10 +725,8 @@
         let systemLogsData = [];
         let sortDirection = {};
 
-        // DOM Ready Initialization
         document.addEventListener("DOMContentLoaded", () => {
             populateUnitsDropdown();
-            // Check session
             const savedUser = localStorage.getItem("ngpims_user");
             if (savedUser) {
                 currentUser = JSON.parse(savedUser);
@@ -762,7 +734,6 @@
             }
         });
 
-        // Switch between Login and Registration views
         function switchAuthView(viewName) {
             const loginCard = document.getElementById("loginViewCard");
             const regCard = document.getElementById("registerViewCard");
@@ -775,31 +746,18 @@
             }
         }
 
-        // Populate Dropdowns
         function populateUnitsDropdown() {
             const regUnit = document.getElementById("regUnit");
             const filterUnit = document.getElementById("filterUnitSelect");
             const entryUnit = document.getElementById("entryUnitSelect");
             
             UNITS_LIST.forEach(unit => {
-                const opt1 = document.createElement("option");
-                opt1.value = unit;
-                opt1.textContent = unit;
-                regUnit.appendChild(opt1);
-
-                const opt2 = document.createElement("option");
-                opt2.value = unit;
-                opt2.textContent = unit;
-                filterUnit.appendChild(opt2);
-
-                const opt3 = document.createElement("option");
-                opt3.value = unit;
-                opt3.textContent = unit;
-                entryUnit.appendChild(opt3);
+                regUnit.appendChild(new Option(unit, unit));
+                filterUnit.appendChild(new Option(unit, unit));
+                entryUnit.appendChild(new Option(unit, unit));
             });
         }
 
-        // Show/Hide Loading Spinner
         function showLoading(msg = "তথ্য সেভ/লোড হচ্ছে...") {
             document.getElementById("loadingText").innerText = msg;
             document.getElementById("loadingOverlay").classList.remove("hidden");
@@ -808,7 +766,6 @@
             document.getElementById("loadingOverlay").classList.add("hidden");
         }
 
-        // Modal Helpers
         function showModal(title, body) {
             document.getElementById("modalTitle").innerText = title;
             document.getElementById("modalBody").innerText = body;
@@ -818,7 +775,6 @@
             document.getElementById("customModal").classList.add("hidden");
         }
 
-        // API Call Helper
         async function apiPost(data) {
             showLoading();
             try {
@@ -837,17 +793,19 @@
             }
         }
 
-        // Handle Registration
         async function handleRegistration(e) {
             e.preventDefault();
             const unit = document.getElementById("regUnit").value;
             const designation = document.getElementById("regDesignation").value;
-            const bp = document.getElementById("regBP").value.trim();
+            const bp = document.getElementById("regBP").value.trim().toUpperCase();
             const name = document.getElementById("regName").value.trim();
             const password = document.getElementById("regPassword").value.trim();
 
-            if (!/^BP\d{10}$/.test(bp)) {
-                showModal("রেজিস্ট্রেশন ত্রুটি", "বিপি নম্বর অবশ্যই BP সহ ১২ ডিজিট হতে হবে (যেমন: BP9920229900)!");
+            // Updated Validation for BP (12 digits) or CIV (13 digits)
+            const isValidBP = /^BP\d{10}$/.test(bp);
+            const isValidCIV = /^CIV\d{10}$/.test(bp);
+            if (!isValidBP && !isValidCIV) {
+                showModal("রেজিস্ট্রেশন ত্রুটি", "আইডি নম্বর অবশ্যই BP দিয়ে ১২ ডিজিট অথবা CIV দিয়ে ১৩ ডিজিট হতে হবে!");
                 return;
             }
 
@@ -861,14 +819,15 @@
             }
         }
 
-        // Handle Login
         async function handleLogin(e) {
             e.preventDefault();
-            const bp = document.getElementById("loginBP").value.trim();
+            const bp = document.getElementById("loginBP").value.trim().toUpperCase();
             const password = document.getElementById("loginPassword").value.trim();
 
-            if (!/^BP\d{10}$/.test(bp)) {
-                showModal("লগইন ত্রুটি", "বিপি নম্বর সঠিকভাবে লিখুন (BP সহ ১২ ডিজিট)!");
+            const isValidBP = /^BP\d{10}$/.test(bp);
+            const isValidCIV = /^CIV\d{10}$/.test(bp);
+            if (!isValidBP && !isValidCIV) {
+                showModal("লগইন ত্রুটি", "আইডি নম্বর সঠিকভাবে লিখুন (BP দিয়ে ১২ ডিজিট অথবা CIV দিয়ে ১৩ ডিজিট)!");
                 return;
             }
 
@@ -883,7 +842,6 @@
             }
         }
 
-        // Logout
         function logout() {
             localStorage.removeItem("ngpims_user");
             currentUser = null;
@@ -893,7 +851,6 @@
             switchAuthView('login');
         }
 
-        // Show Dashboard and Setup Tabs Navigation
         async function showDashboard() {
             document.getElementById("authSection").classList.add("hidden");
             document.getElementById("dashboardSection").classList.remove("hidden");
@@ -902,7 +859,6 @@
             document.getElementById("navUserName").innerText = currentUser.name;
             document.getElementById("navUserRole").innerText = `${currentUser.designation} (${currentUser.unit})`;
 
-            // Configure Unit Selection in Data Entry Form based on Role
             const unitSelectContainer = document.getElementById("unitSelectionContainer");
             const entryUnitSelect = document.getElementById("entryUnitSelect");
 
@@ -920,7 +876,6 @@
             await fetchAllData();
         }
 
-        // Setup Tabs (With Horizontal Scrolling Support)
         function setupTabs() {
             const tabsNav = document.getElementById("tabsNav");
             tabsNav.innerHTML = "";
@@ -931,7 +886,7 @@
                     { id: "tabEntry", label: "ডাটা এন্ট্রি", icon: "fa-pen-to-square" },
                     { id: "tabManpower", label: "জনবল ডাটা ও ফরওয়ার্ডিং", icon: "fa-users" }
                 ];
-            } else if (currentUser.role === "admin") {
+            } else if (currentUser.role === "admin" || currentUser.role === "developer") {
                 tabs = [
                     { id: "tabEntry", label: "ডাটা এন্ট্রি", icon: "fa-pen-to-square" },
                     { id: "tabAllDatabase", label: "অল ডাটা বেইজ", icon: "fa-database" },
@@ -940,16 +895,9 @@
                     { id: "tabUsers", label: "ইউজার তালিকা", icon: "fa-user-gear" },
                     { id: "tabRecycleBin", label: "রিসাইকেল বিন", icon: "fa-trash-can" }
                 ];
-            } else if (currentUser.role === "developer") {
-                tabs = [
-                    { id: "tabEntry", label: "ডাটা এন্ট্রি", icon: "fa-pen-to-square" },
-                    { id: "tabAllDatabase", label: "অল ডাটা বেইজ", icon: "fa-database" },
-                    { id: "tabUnitWise", label: "ইউনিট ভিত্তিক ডাটা", icon: "fa-filter" },
-                    { id: "tabStats", label: "পরিসংখ্যান", icon: "fa-chart-pie" },
-                    { id: "tabUsers", label: "ইউজার তালিকা", icon: "fa-user-gear" },
-                    { id: "tabRecycleBin", label: "রিসাইকেল বিন", icon: "fa-trash-can" },
-                    { id: "tabLogs", label: "সিস্টেম লগস", icon: "fa-list-check" }
-                ];
+                if (currentUser.role === "developer") {
+                    tabs.push({ id: "tabLogs", label: "সিস্টেম লগস", icon: "fa-list-check" });
+                }
             }
 
             tabs.forEach((tab, index) => {
@@ -965,7 +913,6 @@
             }
         }
 
-        // Switch Active Tab
         function switchTab(tabId, clickedBtn) {
             document.querySelectorAll(".tab-content").forEach(el => el.classList.add("hidden"));
             document.querySelectorAll(".tab-btn").forEach(btn => {
@@ -978,7 +925,6 @@
             clickedBtn.classList.add("bg-blue-800", "text-white");
         }
 
-        // Fetch Data from Apps Script
         async function fetchAllData() {
             const res = await apiPost({ action: "fetchAllData" });
             if (res.success) {
@@ -991,7 +937,6 @@
             }
         }
 
-        // Render UI Elements
         function renderAllViews() {
             if (currentUser.role === "user") {
                 renderUserManpowerTable();
@@ -1007,7 +952,6 @@
             }
         }
 
-        // Sort Helper Function for Ranks
         function sortManpowerList(list) {
             return list.sort((a, b) => {
                 const rankA = DESIG_RANK_ORDER[a.Designation] || 99;
@@ -1016,14 +960,13 @@
             });
         }
 
-        // Handle Data Entry
         async function handleDataEntry(e) {
             e.preventDefault();
             const targetUnit = (currentUser.role === "admin" || currentUser.role === "developer") 
                 ? document.getElementById("entryUnitSelect").value 
                 : currentUser.unit;
 
-            const bp = document.getElementById("entryBP").value.trim();
+            const bp = document.getElementById("entryBP").value.trim().toUpperCase();
             const desig = document.getElementById("entryDesignation").value;
             const brushNo = document.getElementById("entryBrushNo").value.trim();
             const name = document.getElementById("entryName").value.trim();
@@ -1035,10 +978,15 @@
                 showModal("ডাটা এন্ট্রি ভুল", "অনুগ্রহ করে ইউনিটের নাম নির্বাচন করুন!");
                 return;
             }
-            if (!/^BP\d{10}$/.test(bp)) {
-                showModal("ডাটা এন্ট্রি ভুল", "বিপি নম্বর অবশ্যই BP সহ ১২ ডিজিট হতে হবে!");
+
+            // Validation Check for Data Entry: BP (12 digits) or CIV (13 digits)
+            const isValidBP = /^BP\d{10}$/.test(bp);
+            const isValidCIV = /^CIV\d{10}$/.test(bp);
+            if (!isValidBP && !isValidCIV) {
+                showModal("ডাটা এন্ট্রি ভুল", "বিপি/আইডি নম্বর অবশ্যই BP দিয়ে ১২ ডিজিট অথবা CIV দিয়ে ১৩ ডিজিট হতে হবে!");
                 return;
             }
+
             if (!mobile && !email) {
                 showModal("ডাটা এন্ট্রি ভুল", "নতুন মোবাইল নম্বর ও নতুন ই-মেইল এর মধ্যে যে কোন একটি অবশ্যই পূরণ করতে হবে!");
                 return;
@@ -1068,7 +1016,6 @@
             }
         }
 
-        // Render User Manpower Data & Print Setup (With empty state handled as requested)
         function renderUserManpowerTable() {
             const tbody = document.getElementById("userManpowerTableBody");
             const printTbody = document.getElementById("printTableBody");
@@ -1078,7 +1025,6 @@
             let userItems = allManpowerData.filter(d => d.Unit === currentUser.unit);
             userItems = sortManpowerList(userItems);
 
-            // Print Header & Footer Info Setup
             document.getElementById("printUnitName").innerText = currentUser.unit;
             document.getElementById("printSignName").innerText = `(${currentUser.name})`;
             document.getElementById("printSignBP").innerText = currentUser.bp;
@@ -1134,7 +1080,6 @@
             });
         }
 
-        // Render Admin All Data Table
         function renderAllDataTable() {
             const tbody = document.getElementById("allDataTableBody");
             tbody.innerHTML = "";
@@ -1165,7 +1110,6 @@
             });
         }
 
-        // Sort All Data Column
         function sortAllData(key) {
             sortDirection[key] = !sortDirection[key];
             allManpowerData.sort((a, b) => {
@@ -1181,7 +1125,6 @@
             renderAllDataTable();
         }
 
-        // Render Unit Wise Filter Data
         function renderUnitWiseData() {
             const selectedUnit = document.getElementById("filterUnitSelect").value;
             const tbody = document.getElementById("unitWiseTableBody");
@@ -1212,7 +1155,6 @@
             });
         }
 
-        // Render Statistics Table
         function renderStatsTable() {
             const tbody = document.getElementById("statsTableBody");
             const tfoot = document.getElementById("statsTableFoot");
@@ -1262,7 +1204,6 @@
             `;
         }
 
-        // Print Statistics
         function printStats() {
             const printContent = document.getElementById("statsPrintArea").innerHTML;
             const win = window.open('', '', 'height=700,width=900');
@@ -1276,7 +1217,6 @@
             win.print();
         }
 
-        // Render Users Table
         function renderUsersTable() {
             const tbody = document.getElementById("usersTableBody");
             tbody.innerHTML = "";
@@ -1310,7 +1250,6 @@
             });
         }
 
-        // Toggle User Status
         async function toggleUserStatus(bp, newStatus) {
             const res = await apiPost({
                 action: "toggleUserStatus",
@@ -1323,7 +1262,6 @@
             }
         }
 
-        // Render Recycle Bin Table
         function renderRecycleBinTable() {
             const tbody = document.getElementById("recycleBinTableBody");
             tbody.innerHTML = "";
@@ -1357,7 +1295,6 @@
             });
         }
 
-        // Restore Data Action
         async function restoreRecycleData(id) {
             if (confirm("আপনি কি এই ডাটাটি রিস্টোর করতে চান?")) {
                 const res = await apiPost({
@@ -1371,7 +1308,6 @@
             }
         }
 
-        // Permanent Delete Action
         async function permanentDeleteData(id) {
             if (confirm("সতর্কতা! এই ডাটাটি স্থায়ীভাবে মুছে যাবে এবং আর উদ্ধার করা সম্ভব হবে না। আপনি কি নিশ্চিত?")) {
                 const res = await apiPost({
@@ -1385,7 +1321,6 @@
             }
         }
 
-        // Move Data to Recycle Bin
         async function confirmDeleteData(id) {
             if (confirm("আপনি কি ডাটাটি মুছে রিসাইকেল বিন-এ স্থানান্তর করতে চান?")) {
                 const res = await apiPost({
@@ -1399,7 +1334,6 @@
             }
         }
 
-        // Open Edit Modal
         function openEditModal(id) {
             const item = allManpowerData.find(d => d.ID === id);
             if (!item) return;
@@ -1415,21 +1349,28 @@
 
             document.getElementById("editModal").classList.remove("hidden");
         }
+
         function closeEditModal() {
             document.getElementById("editModal").classList.add("hidden");
         }
 
-        // Update Data Handler
         async function handleUpdateData(e) {
             e.preventDefault();
             const id = document.getElementById("editRowId").value;
-            const bp = document.getElementById("editBP").value.trim();
+            const bp = document.getElementById("editBP").value.trim().toUpperCase();
             const designation = document.getElementById("editDesignation").value;
             const brushNo = document.getElementById("editBrushNo").value.trim();
             const name = document.getElementById("editName").value.trim();
             const mobile = document.getElementById("editMobile").value.trim();
             const email = document.getElementById("editEmail").value.trim();
             const comments = document.getElementById("editComments").value.trim();
+
+            const isValidBP = /^BP\d{10}$/.test(bp);
+            const isValidCIV = /^CIV\d{10}$/.test(bp);
+            if (!isValidBP && !isValidCIV) {
+                showModal("আপডেট ত্রুটি", "আইডি নম্বর অবশ্যই BP দিয়ে ১২ ডিজিট অথবা CIV দিয়ে ১৩ ডিজিট হতে হবে!");
+                return;
+            }
 
             const item = allManpowerData.find(d => d.ID === id);
 
@@ -1448,7 +1389,6 @@
             }
         }
 
-        // Render Logs Table
         function renderLogsTable() {
             const tbody = document.getElementById("logsTableBody");
             tbody.innerHTML = "";
@@ -1471,8 +1411,7 @@
             });
         }
 
-        // Export Table to Excel File
-        function exportToExcel(tableId, filename = 'NGPIMS_Export') {
+        exportToExcel = function(tableId, filename = 'NGPIMS_Export') {
             const table = document.getElementById(tableId);
             const wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
             XLSX.writeFile(wb, `${filename}_${new Date().toISOString().slice(0,10)}.xlsx`);
